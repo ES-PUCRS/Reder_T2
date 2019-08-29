@@ -88,4 +88,5 @@ import {A11yModule} from '@angular/cdk/a11y';
     ScrollingModule,
   ]
 })
+
 export class DemoMaterialModule {}

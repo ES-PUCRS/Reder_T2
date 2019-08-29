@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BlueprintComponent } from './blueprint/blueprint.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -11,8 +10,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { AppComponent } from './app.component';
-
-
 
 
 @NgModule({
@@ -29,7 +26,7 @@ import { AppComponent } from './app.component';
     AppRoutingModule,
     HttpClientModule,
     BrowserModule,
-    FormsModule,
+    FormsModule
   ],
   entryComponents: [BlueprintComponent],
   bootstrap: [AppComponent],
@@ -37,5 +34,3 @@ import { AppComponent } from './app.component';
 })
 
 export class AppModule { }
-
-//platformBrowserDynamic().bootstrapModule(BlueprintComponent);

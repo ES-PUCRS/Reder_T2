@@ -57,7 +57,12 @@
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
+//import 'zone.js/dist/zone';
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+import 'core-js/proposals/reflect-metadata'
+import 'web-animations-js';
+import 'hammerjs';

@@ -1,24 +1,41 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BlueprintComponent } from './blueprint/blueprint.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
+import { DemoMaterialModule } from './app.material.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { HomeComponent } from './home/home.component';
+import { AppComponent } from './app.component';
+
+
+
 
 @NgModule({
   declarations: [
-    AppComponent,
+    BlueprintComponent,
     HomeComponent,
-    BlueprintComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatNativeDateModule,
+    DemoMaterialModule,
     AppRoutingModule,
-    DragDropModule
+    HttpClientModule,
+    BrowserModule,
+    FormsModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  entryComponents: [BlueprintComponent],
+  bootstrap: [AppComponent],
+  providers: []
 })
+
 export class AppModule { }
+
+//platformBrowserDynamic().bootstrapModule(BlueprintComponent);

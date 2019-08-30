@@ -10,21 +10,31 @@ import { state } from '@angular/animations';
 })
 export class BlueprintComponent implements OnInit {
   
-  transition = {key: 'value', state: state};
-  alphabet: alphabet[] = [];
-  word: alphabet[] = [];
+  currentState: state = null;
+  newStateName: string = '';
+  sigma: string[] = [];
   states: state[] = [];
+  word: string[] = [];
 
   constructor() {}
 
   ngOnInit() {
   }
+
+  newState(){
+    let a: state = {
+      id: this.newStateName,
+      final: false,
+      transition: {key: null, state: null}
+    };
+    this.newStateName = '';
+    this.states.push(a);
+    console.log(this.states);
+  }
 }
 
 interface state{
   id: string,
-
-}
-interface alphabet{
-  sigma: string;
+  final: boolean,
+  transition: {key: string, state: state}
 }

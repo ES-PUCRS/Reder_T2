@@ -14,10 +14,10 @@
     margin-right: 0%;
     border: solid 1px red;
 
-    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    display: flex;
 }
 
 .blueprint {
@@ -25,13 +25,13 @@
     height: 100%;
     margin-right: 0%;
     min-width: 400px;
-    /*max-width: 1600px;*/
+    max-width: 1600px;
     min-height: 400px;
     max-height: 825px;
     border: solid 1px red;
 
-    display: inline-flex;
     justify-content: center;
+    display: inline-flex;
     align-items: center;
 }
 
@@ -60,4 +60,8 @@
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.form-group {
+    display: inline-flex;
 }

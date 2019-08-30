@@ -2,23 +2,28 @@
 <div class="screen">
     
     <div class="toolsbar">
+        <div>
+            <button type="button" class="btn btn-dark" (click)="newState()">new</button>
+            <input [(ngModel)] = "newStateName" type="text"/>
+        </div>
     </div>
 
     <div class="blueprint">
+
         <div class="state"
             cdkDrag
             cdkDragBoundary=".blueprint"
+            *ngFor="let state of states"
             >
-        q0
+            {{state.id}}
         </div>
 
         <!--
         <div class="state"
             cdkDrag
             cdkDragBoundary=".blueprint"
-            *ngFor="let state of states"
             >
-            {{state.name}}
+        q0
         </div>
         -->
 

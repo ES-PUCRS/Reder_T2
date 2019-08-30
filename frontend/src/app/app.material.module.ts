@@ -1,5 +1,7 @@
 import {NgModule} from '@angular/core';
 
+
+//Drag event ~ animations ~ materials
 import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
@@ -42,50 +44,55 @@ import {PortalModule} from '@angular/cdk/portal';
 import {CdkTreeModule} from '@angular/cdk/tree';
 import {A11yModule} from '@angular/cdk/a11y';
 
+
+//RightClickDropDown
+import { OverlayModule } from '@angular/cdk/overlay';
+
 @NgModule({
   exports: [
-    A11yModule,
-    CdkStepperModule,
-    CdkTableModule,
-    CdkTreeModule,
-    DragDropModule,
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatStepperModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
     MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
+    MatAutocompleteModule,
+    MatButtonToggleModule,
+    MatBottomSheetModule,
     MatSlideToggleModule,
+    MatProgressBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatExpansionModule,
+    MatPaginatorModule,
+    MatGridListModule,
     MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
-    MatTabsModule,
+    MatCheckboxModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatSidenavModule,
+    MatStepperModule,
+    CdkStepperModule,
+    MatDividerModule,
+    MatDialogModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatRippleModule,
+    MatSelectModule,
+    ScrollingModule,
+    CdkTableModule,
+    MatTableModule,
+    DragDropModule,
+    MatRadioModule,
+    MatBadgeModule,
+    MatChipsModule,
+    MatInputModule,
+    CdkTreeModule,
+    MatCardModule,
+    OverlayModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
+    MatSortModule,
+    MatTabsModule,
     MatTreeModule,
     PortalModule,
-    ScrollingModule,
+    A11yModule,
   ]
 })
 

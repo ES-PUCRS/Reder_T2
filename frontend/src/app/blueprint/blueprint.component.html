@@ -3,14 +3,14 @@
     
     <div class="toolsbar">
         <div>
-            <button type="button" class="btn btn-dark" (click)="newState()">new</button>
             <input [(ngModel)] = "newStateName" type="text"/>
+            <button type="button" class="btn btn-dark" (click)="newState()">new</button>
         </div>
     </div>
 
     <div class="blueprint">
 
-        <div class="state"
+        <div class="state" (contextmenu)="open($event, state); $event. preventDefault();"
             cdkDrag
             cdkDragBoundary=".blueprint"
             *ngFor="let state of states"
@@ -18,19 +18,21 @@
             {{state.id}}
         </div>
 
-        <div class="state"
-        cdkDrag
-        cdkDragBoundary=".blueprint"
-        >
-            q0
-        </div>
-
-        
-    <div class="test">
-        
+        <ng-template #stateMenu let-state>
+            <section class="state-menu">
+                <div (click)="delete(state)">Delete</div>
+                <div>Send to</div>
+            </section>
+        </ng-template>
     </div>
 
 </div>
 
+<!-- <div class="state"
+cdkDrag
+cdkDragBoundary=".blueprint"
+>
+    q0
+</div> -->
 
 <!-- [cdkDragStartDelay]="500" -->

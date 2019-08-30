@@ -29,6 +29,7 @@ export class BlueprintComponent implements OnInit {
   ) {}
 
   open({ x, y }: MouseEvent, state) {
+    console.log(x, y);
     this.close();
     const positionStrategy = this.overlay.position()
       .flexibleConnectedTo({ x, y })
@@ -40,7 +41,7 @@ export class BlueprintComponent implements OnInit {
           overlayY: 'top',
         }
       ]);
-  
+      
   this.overlayRef = this.overlay.create({
     positionStrategy,
     scrollStrategy: this.overlay.scrollStrategies.close()
@@ -77,6 +78,14 @@ export class BlueprintComponent implements OnInit {
   }
 
   delete(state) {
+    this.states.splice(this.states.indexOf(state), 1);
+    this.close();
+  }
+  rename(state) {
+    this.states.splice(this.states.indexOf(state), 1);
+    this.close();
+  }
+  turn(state) {
     this.states.splice(this.states.indexOf(state), 1);
     this.close();
   }

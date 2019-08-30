@@ -32,8 +32,8 @@
     border: solid 1px red;
 
     justify-content: center;
+    display: inline-flexbox;
     align-items: center;
-    display: inline-flex;
 }
 /* LAYOUT SHEETS */
 

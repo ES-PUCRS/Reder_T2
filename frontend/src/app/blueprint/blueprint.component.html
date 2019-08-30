@@ -12,6 +12,7 @@
 
         <div class="state" (contextmenu)="open($event, state); $event. preventDefault();"
             cdkDrag
+            cdkDragBoundary=".state"
             cdkDragBoundary=".blueprint"
             *ngFor="let state of states"
             >
@@ -21,9 +22,12 @@
         <ng-template #stateMenu let-state>
             <section class="state-menu">
                 <div (click)="delete(state)">Delete</div>
-                <div>Send to</div>
+                <div>Rename</div>
+                <div>Turn final</div>
+                <div>Turn initial</div>
             </section>
         </ng-template>
+
     </div>
 
 </div>

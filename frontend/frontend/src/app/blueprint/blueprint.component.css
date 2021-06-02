@@ -1,0 +1,180 @@
+/* LAYOUT SHEETS */
+.screen {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+}
+
+.toolsbar {
+    width: 20%;
+    height: 100%;
+    min-width: 200px;
+    max-width: 400px;
+    min-height: 400px;
+    max-height: 825px;
+    margin-right: 0%;
+    border: solid 1px red;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: flex;
+}
+
+.blueprint {
+    width: 80%;
+    height: 100%;
+    margin-right: 0%;
+    min-width: 400px;
+    max-width: 1600px;
+    min-height: 400px;
+    max-height: 825px;
+    border: solid 1px red;
+
+    justify-content: center;
+    display: inline-flexbox;
+    align-items: center;
+}
+/* LAYOUT SHEETS */
+
+
+
+/* STATES DRAG */
+.state {
+    width: 80px;
+    height: 80px;
+    border: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: move;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 100%;
+    background: #ffff00;
+    position: relative;
+    max-width: pos;
+    z-index: 1;
+    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+                0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.state:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+/* STATES DRAG */
+
+
+
+/* RIGHT CLICK DROP DOWN */
+.collection {
+    padding-left: 0;
+    list-style-type: none;
+    margin: 0.5rem 0 1rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .collection-item {
+    background-color: #fff;
+    line-height: 1.5rem;
+    padding: 10px 20px;
+    margin: 0;
+    border-bottom: 1px solid #e0e0e0;
+    list-style-type: none;
+  }
+  .my-menu {
+    background-color: #fff;
+    border: 1px solid rosybrown;
+    padding: 20px;
+  }
+  .state-menu {
+    background-color: #fafafa;
+    padding: 4pt;
+    font-size: 10pt;
+    z-index: 1000;
+    box-shadow: 0 0 12pt rgba(0, 0, 0, 0.25);
+    border-radius: 4pt;
+    animation: fadeIn 0.1s ease-out;
+    opacity: 1;
+    display: block;
+    position: absolute;
+  }
+  .state-menu hr {
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+  .state-menu div {
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    color: #333;
+    padding: 0.5em 2em 0.5em 0.75em;
+    max-width: 18em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .state-menu div:hover {
+    background-color: #333;
+    color: #fff;
+  }
+  .state-menu div:before {
+    content: '';
+    float: left;
+    margin-right: 0.75em;
+    width: 0.5em;
+    height: 1em;
+    display: inline-flexbox;
+  }
+  /* Animatinons */
+  @-webkit-keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @-webkit-keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  .is-fadingIn {
+    -webkit-animation: fadeIn 0.1s ease-out;
+    animation: fadeIn 0.1s ease-out;
+    opacity: 1;
+    display: flex;
+  }
+  .is-fadingOut {
+    -webkit-animation: fadeOut 0.1s ease-out;
+    animation: fadeOut 0.1s ease-out;
+    opacity: 0;
+    display: flex;
+  }
+/* RIGHT CLICK DROP DOWN */
+

@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="sidebar">
+    <h1>OOI</h1>
+  </div>
+  <div class="box-boundary" (contextmenu)="open($event); $event. preventDefault();">
+    <div class="box-box" cdkDragBoundary=".box-boundary" cdkDrag>
+      I can only be dragged within the dotted container
+    </div>
+  </div>
+
+  <!-- <button mat-icon-button  aria-label="Example icon-button with a menu">
+    <mat-icon>more_vert</mat-icon>
+  </button> -->
+  <mat-menu #menu="menu"
+    class="menuOpnBtn"
+  >
+  <button mat-menu-item *ngFor="let opn of menuOptions"><span>Disable alerts</span></button>>
+  <!-- (click)="addTextTo(opn)" -->
+  </mat-menu>
+
+</div>

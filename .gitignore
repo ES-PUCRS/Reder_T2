@@ -1,0 +1,162 @@
+# ------------------------------------------------------------------
+# Gradle -----------------------------------------------------------
+
+# Directories #
+backend/build/
+backend/bin/
+backend/repos/
+backend/repos/
+backend/doc/
+backend/doc/
+backend/.gradle/
+backend/bin/
+backend/target/
+ 
+# OS Files #
+backend/.DS_Store
+
+# JetBrain's Idea specific stuff #
+
+backend/.idea*
+backend/*.iml
+
+# Gradle:
+backend/.idea/gradle.xml
+backend/.idea/libraries
+
+## File-based project format:
+backend/*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+backend/out/
+
+# mpeltonen/sbt-idea plugin
+backend/.idea_modules/
+
+# JIRA plugin
+backend/atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+backend/com_crashlytics_export_strings.xml
+backend/crashlytics.properties
+backend/crashlytics-build.properties
+backend/fabric.properties
+
+
+backend/*.class
+backend/browscap.csv
+backend/gradle/wrapper
+backend/gradlew.bat
+backend/gradlew
+
+# Package Files #
+backend/*.zip
+backend/*.jar
+backend/*.war
+backend/*.ear
+backend/*.db
+
+######################
+# Windows			 #
+######################
+ 
+# Windows image file caches
+backend/Thumbs.db 
+ 
+# Folder config file
+backend/Desktop.ini
+ 
+######################
+# OSX				 #
+######################
+ 
+backend/.DS_Store
+backend/.svn
+ 
+# Thumbnails
+backend/._*
+ 
+# Files that might appear on external disk
+backend/.Spotlight-V100
+backend/.Trashes
+backend/*.pydevproject
+backend/.project
+backend/.metadata
+backend/bin/**
+backend/tmp/**
+backend/tmp/**/*
+backend/*.tmp
+backend/*.bak
+backend/*.swp
+backend/*~.nib
+backend/local.properties
+backend/.classpath
+backend/.settings/
+backend/.loadpath
+backend/src/main/resources/rebel.xml
+
+# Vim temps
+backend/.*~
+
+# External tool builders
+backend/.externalToolBuilders/
+ 
+# Locally stored "Eclipse launch configurations"
+backend/*.launch
+ 
+# CDT-specific
+backend/.cproject
+ 
+# PDT-specific
+backend/.buildpath
+
+# ------------------------------------------------------------------
+# Angular ----------------------------------------------------------
+
+# compiled output
+frontend/dist
+frontend/tmp
+frontend/out-tsc
+# Only exists if Bazel was run
+frontend/bazel-out
+
+# dependencies
+frontend/node_modules
+
+# profiling files
+frontend/chrome-profiler-events*.json
+
+# IDEs and editors
+frontend/.idea
+frontend/.project
+frontend/.classpath
+frontend/.c9/
+frontend/*.launch
+frontend/.settings/
+frontend/*.sublime-workspace
+
+# IDE - VSCode
+frontend/.vscode/*
+frontend/!.vscode/settings.json
+frontend/!.vscode/tasks.json
+frontend/!.vscode/launch.json
+frontend/!.vscode/extensions.json
+frontend/.history/*
+
+# misc
+frontend/.sass-cache
+frontend/connect.lock
+frontend/coverage
+frontend/libpeerconnection.log
+frontend/npm-debug.log
+frontend/yarn-error.log
+frontend/testem.log
+frontend/typings
+
+# System Files
+frontend/.DS_Store
+frontend/Thumbs.db
+
+_class

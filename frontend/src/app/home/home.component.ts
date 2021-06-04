@@ -1,13 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { BackendService } from '../services/backend.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
 
-  constructor() { }
+export class HomeComponent implements OnInit {
+  constructor(private backendService: BackendService) {
+  }
 
   ngOnInit(): void { }
 
@@ -42,7 +45,16 @@ export class HomeComponent implements OnInit {
 
   open({ x, y }: MouseEvent) {
     console.log(x, y);
-    this.menu?.openMenu();
+    // this.menu?.openMenu();
   }
+
+  send(){
+    let res: any;
+    this.backendService.restGet().subscribe( data => {
+      console.log(data);
+    })
+  }
+
+
 
 }

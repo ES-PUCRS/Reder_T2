@@ -3,7 +3,8 @@ package redes.routing.core
 import groovy.transform.ThreadInterrupt
 import groovy.lang.Lazy
 
-
+import redes.routing.ui.server.Web
+import redes.routing.Router
 
 @ThreadInterrupt
 class Firmware 
@@ -12,17 +13,18 @@ class Firmware
     @Lazy
 	Properties properties
 
+	// Instance variables -------------------------------------------------------------
+
+		private static Firmware instance
+	
+	// --------------------------------------------------------------------------------
+
 	// Start the router firmware
 	def static run(String[] args){
-		if(args.size() > 0) {
-			println "00"
-			// def _instance = getInstance()
-			// args.each{ arg -> 
-			// 	_instance.startSocket(arg as String)
-			// }
-		} else {
-			println "throw invalid wired(port) error"
-		}
+		def _instance = getInstance()
+		if(args.size() > 0) { println args }
+
+		new Web().start()
 	}
 
 	// Singleton access
@@ -33,14 +35,16 @@ class Firmware
 	}
 
 	// Singleton constructor
-
 	private Firmware(){
 	    this
 		    .getClass()
-	    	.getResource( VM.propertiesPath )
+	    	.getResource( Router.propertiesPath )
 	    	.withInputStream {
 	        	properties.load(it)
 	    	}
+
+		
+		println "${properties.'ui.views.path'}"
 	}
 
 }

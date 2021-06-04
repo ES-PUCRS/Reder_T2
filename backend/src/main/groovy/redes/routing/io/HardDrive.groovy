@@ -5,7 +5,7 @@ import redes.routing.ui.ANSI
 
 class HardDrive {
 
-	def static readFile (Firmware firmware, String _file) {
+	def static readFile (String _file) {
 		def file
 		try{
 			file = new Object() { }.getClass().getResource("/HardDisk/${_file}")
@@ -16,8 +16,7 @@ class HardDrive {
 						"${e.getMessage()}"		+
 					"${ANSI.RESET}"
 		}
-		// if(file)
-			// return decodeAssembly(cpu, file) //?.text
+		file
 	}
 
 }

@@ -12,13 +12,16 @@ export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService) {
   }
 
-  ngOnInit(): void { }
+  
 
   @ViewChild('trigger', { static: true })
   trigger: MatMenuTrigger | undefined;
 
   menuOptions: Array<String> = ["option 1", "option 2", "option 3"];
   selectedOption: string = "no Option selected";
+  routerCount: number = 0;
+  routers: Array<{name: string, port: string}> = [];
+
   onTextSelection(event: any):void{
 
     let menu = document.getElementById('matMenu');
@@ -30,7 +33,19 @@ export class HomeComponent implements OnInit {
       this.trigger?.openMenu();
     }
   }
-
+  
+  ngOnInit(): void { 
+    this.routerCount = window.localStorage.length;
+    let objectKeys = Object.keys(window.localStorage);
+    for(let i = 0; i < window.localStorage.length; i++){
+      let aux: any = window.localStorage.getItem(objectKeys[i])
+      this.routers.push({
+        "name": objectKeys[i],
+        "port": aux
+    });
+    }
+    console.log(this.routers);
+  }
   // onMenuClosed():void {
   //   var menu = document.getElementById('menuBtn');
   //       if (menu) {
@@ -59,6 +74,15 @@ export class HomeComponent implements OnInit {
     let res: any;
     this.backendService.restPost().subscribe( data => {
       console.log(data);
+      let port: string = data.toString()
+      window.localStorage.setItem("Router " +(1+this.routerCount), port);
+      console.log(window.localStorage.length);
+      this.routers.push({
+        "name": "Router " +(1+this.routerCount),
+        "port": port
+      });
+      console.log(this.routers);
+      this.routerCount = window.localStorage.length + 1;
     })
   }
 

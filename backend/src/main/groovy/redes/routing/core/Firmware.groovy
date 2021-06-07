@@ -16,13 +16,16 @@ class Firmware
 	// Instance variables -------------------------------------------------------------
 
 		private static Firmware instance
-	
+		public static Integer port
+
 	// --------------------------------------------------------------------------------
 
 	// Start the router firmware
 	def static run(String[] args){
 		def _instance = getInstance()
-		if(args.size() > 0) { println args }
+		if(args.size() > 0) {
+			port = Integer.parseInt(args[0])
+		}
 
 		new Web().start()
 	}
@@ -42,9 +45,6 @@ class Firmware
 	    	.withInputStream {
 	        	properties.load(it)
 	    	}
-
-		
-		println "${properties.'ui.views.path'}"
 	}
 
 }

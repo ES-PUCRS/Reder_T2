@@ -48,13 +48,18 @@ export class HomeComponent implements OnInit {
     // this.menu?.openMenu();
   }
 
-  send(){
+  sendGet(){
     let res: any;
     this.backendService.restGet().subscribe( data => {
       console.log(data);
     })
   }
 
-
+  sendPost(){
+    let res: any;
+    this.backendService.restPost().subscribe( data => {
+      console.log(data);
+    })
+  }
 
 }

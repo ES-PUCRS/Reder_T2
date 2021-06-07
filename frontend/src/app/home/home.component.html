@@ -1,12 +1,22 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="container">
   <div class="sidebar">
-    <button mat-fab color="warn" (click)="sendGet();" aria-label="Example icon button with a home icon">
-      <mat-icon>GET</mat-icon>
-    </button>
+    <div class="newRouter">
+      <label>
+        Server List
+      </label>
+      <button (click)="sendPost();" id="addButton" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
 
-    <button mat-fab color="warn" (click)="sendPost();" aria-label="Example icon button with a home icon">
-      <mat-icon>POST</mat-icon>
-    </button>
+    <div class="routersList">
+      <div class="routerInList" *ngFor="let router of routers"> 
+        <label>
+          {{router.name}}
+        </label>
+      </div>
+    </div>
 
   </div>
   <div class="box-boundary" (contextmenu)="open($event); $event. preventDefault();">

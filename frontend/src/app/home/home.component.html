@@ -1,8 +1,13 @@
 <div class="container">
   <div class="sidebar">
-    <button mat-fab color="warn" (click)="send();" aria-label="Example icon button with a home icon">
-      <mat-icon>home</mat-icon>
+    <button mat-fab color="warn" (click)="sendGet();" aria-label="Example icon button with a home icon">
+      <mat-icon>GET</mat-icon>
     </button>
+
+    <button mat-fab color="warn" (click)="sendPost();" aria-label="Example icon button with a home icon">
+      <mat-icon>POST</mat-icon>
+    </button>
+
   </div>
   <div class="box-boundary" (contextmenu)="open($event); $event. preventDefault();">
     <div class="box-box" cdkDragBoundary=".box-boundary" cdkDrag>

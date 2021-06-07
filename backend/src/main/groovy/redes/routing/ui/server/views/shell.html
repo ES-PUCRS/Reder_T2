@@ -79,25 +79,17 @@
 		        return res.text();
     		},
 
+
+    		
+
 		    cls: function(){
 		        this.exec('clear');
-		        this.echo(  'Sistemas Operacionais. Maquina virtual,\n' +
-							'RELEASE VM + GM + GP + IO');
-		    },
-
-
-		    output: function(){
-				return fetch('http://localhost:8080/output')
-		            .then(r => r.text())
+		        this.echo(  'Laboratório & Redes de Computadores,\n' +
+							'RELEASE Router prompt');
 		    },
 
 		    restart: function(){
 				fetch('http://localhost:8080/restart')
-		            .then(r => r.text())
-		    },
-
-		    commit: function(comment){
-				fetch('http://localhost:8080/commit?comment='+comment)
 		            .then(r => r.text())
 		    },
 

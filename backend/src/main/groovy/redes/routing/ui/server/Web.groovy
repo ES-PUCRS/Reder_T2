@@ -3,9 +3,9 @@ package redes.routing.ui.server
 import com.sun.net.httpserver.*
 import groovy.lang.Lazy
 
+import redes.routing.core.Firmware
 import redes.routing.ui.ANSI
 import redes.routing.Router
-
 
 class Web
 	extends Thread {
@@ -35,7 +35,7 @@ class Web
 		]
 
 		def render
-		def port = (properties."server.port" as int) ?: 2345
+		def port = (Firmware.port as int)
 		def root = new File(properties."ui.views.path")
 		def server = HttpServer.create(new InetSocketAddress(port), 0)
 

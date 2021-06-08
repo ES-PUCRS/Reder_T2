@@ -1,3 +1,3 @@
 @ECHO OFF
 
-gradle run
+gradle run --args=1010

@@ -15,8 +15,11 @@ class Firmware
 
 	// Instance variables -------------------------------------------------------------
 
-		private static Firmware instance
 		public static Integer port
+
+		private static Firmware instance
+
+		private static Map 
 
 	// --------------------------------------------------------------------------------
 
@@ -38,9 +41,8 @@ class Firmware
 	}
 
 	// Singleton constructor
-	private Firmware(){
-	    this
-		    .getClass()
+	private Firmware() {
+	    this.getClass()
 	    	.getResource( Router.propertiesPath )
 	    	.withInputStream {
 	        	properties.load(it)

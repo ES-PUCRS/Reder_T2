@@ -11,7 +11,7 @@
     </div>
 
     <div class="routersList">
-      <div class="routerInList" *ngFor="let router of routers"> 
+      <div class="routerInList" *ngFor="let router of routers">
         <label>
           {{router.name}}
         </label>
@@ -34,5 +34,7 @@
   <button mat-menu-item *ngFor="let opn of menuOptions"><span>Disable alerts</span></button>> -->
   <!-- (click)="addTextTo(opn)" -->
   <!-- </mat-menu> -->
-
+  <button (click)="getOnRouter();" id="addButton" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+    <mat-icon>add</mat-icon>
+  </button>
 </div>

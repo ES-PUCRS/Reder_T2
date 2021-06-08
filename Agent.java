@@ -76,7 +76,7 @@ public class Agent {
             } else {
                 Runtime.getRuntime().exec(
                     new String[] {
-                        "exo-open", "--launch", "TerminalEmulator"
+                        "exo-open", "--launch", "TerminalEmulator",
                         "./deploy.sh " + controlPort
                     }
                 );

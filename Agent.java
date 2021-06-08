@@ -65,7 +65,7 @@ public class Agent {
                 controlPort = generatePort();
             } while (!available(controlPort));
 
-            if(System.getenv("OS").toLowerCase().contains("windows")) {
+            if(System.getenv("OS") != null) {
                 Runtime.getRuntime().exec(
                     new String[]{
                         "cmd", "/c", "start",

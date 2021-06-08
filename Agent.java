@@ -65,7 +65,7 @@ public class Agent {
                 controlPort = generatePort();
             } while (!available(controlPort));
 
-            if(System.getenv("OS").toLowerCase().contains("windows")) {
+            if(System.getenv("OS") != null) {
                 Runtime.getRuntime().exec(
                     new String[]{
                         "cmd", "/c", "start",
@@ -74,7 +74,12 @@ public class Agent {
                     }
                 );
             } else {
-                Runtime.getRuntime().exec("./deploy.sh " + controlPort);
+                Runtime.getRuntime().exec(
+                    new String[] {
+                        "exo-open", "--launch", "TerminalEmulator",
+                        "./deploy.sh " + controlPort
+                    }
+                );
             }
 
 

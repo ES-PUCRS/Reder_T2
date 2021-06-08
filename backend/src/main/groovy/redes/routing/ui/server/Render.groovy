@@ -3,7 +3,9 @@ package redes.routing.ui.server
 import groovy.text.SimpleTemplateEngine 
 import groovy.lang.Lazy
 
-class Render{
+import redes.routing.Router
+
+class Render {
 
 	@Lazy
 	private static Properties properties
@@ -71,20 +73,13 @@ class Render{
 	// 		.make(binding)
 	// }
 
-	// def static commit(def map) {
-	// 	Runtime.
-	// 	   getRuntime().
-	// 	   exec("cmd /c start \"\" DevTools.bat 1 \"${map["comment"]}\"");
-	// }
 
-
-	// def static importProperties(){
-	// 	new Object() {}
-	//     	.getClass()
-	//     	.getResource( VM.propertiesPath )
-	//     	.withInputStream {
-	//         	properties.load(it)
-	//     	}
-	//     properties."ui.views.path"
-	// }
+	def static importProperties(){
+		new Object() {}
+	    	.getClass()
+	    	.getResource( Router.propertiesPath )
+	    	.withInputStream {
+	        	properties.load(it)
+	    	}
+	}
 }

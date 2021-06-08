@@ -3,7 +3,7 @@ package redes.routing.core
 import groovy.transform.ThreadInterrupt
 import groovy.lang.Lazy
 
-import redes.routing.ui.server.Web
+import redes.routing.ui.server.Server
 import redes.routing.Router
 
 @ThreadInterrupt
@@ -15,8 +15,11 @@ class Firmware
 
 	// Instance variables -------------------------------------------------------------
 
-		private static Firmware instance
 		public static Integer port
+
+		private static Firmware instance
+
+		private static Map 
 
 	// --------------------------------------------------------------------------------
 
@@ -27,7 +30,7 @@ class Firmware
 			port = Integer.parseInt(args[0])
 		}
 
-		new Web().start()
+		new Server().start()
 	}
 
 	// Singleton access
@@ -38,9 +41,8 @@ class Firmware
 	}
 
 	// Singleton constructor
-	private Firmware(){
-	    this
-		    .getClass()
+	private Firmware() {
+	    this.getClass()
 	    	.getResource( Router.propertiesPath )
 	    	.withInputStream {
 	        	properties.load(it)

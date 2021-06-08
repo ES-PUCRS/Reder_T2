@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService) {
   }
 
-  
+
 
   @ViewChild('trigger', { static: true })
   trigger: MatMenuTrigger | undefined;
@@ -33,8 +33,8 @@ export class HomeComponent implements OnInit {
       this.trigger?.openMenu();
     }
   }
-  
-  ngOnInit(): void { 
+
+  ngOnInit(): void {
     this.routerCount = window.localStorage.length;
     let objectKeys = Object.keys(window.localStorage);
     for(let i = 0; i < window.localStorage.length; i++){
@@ -46,6 +46,7 @@ export class HomeComponent implements OnInit {
     }
     console.log(this.routers);
   }
+
   // onMenuClosed():void {
   //   var menu = document.getElementById('menuBtn');
   //       if (menu) {
@@ -63,7 +64,7 @@ export class HomeComponent implements OnInit {
     // this.menu?.openMenu();
   }
 
-  sendGet(){
+  getOnRouter(){
     let res: any;
     this.backendService.restGet().subscribe( data => {
       console.log(data);

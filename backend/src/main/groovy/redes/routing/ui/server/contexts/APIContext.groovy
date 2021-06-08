@@ -1,19 +1,11 @@
 package redes.routing.ui.server.contexts
 
 import com.sun.net.httpserver.HttpExchange
-import com.sun.net.httpserver.HttpHandler
-import groovy.lang.Lazy
 
-import redes.routing.ui.server.Render
-import redes.routing.ui.server.Web
+import redes.routing.ui.server.contexts.interfaces.Context
 import redes.routing.ui.ANSI
-import redes.routing.Router
 
-import java.util.HashMap
-import java.util.Map
-import java.util.Set
-
-class API extends Context {
+class APIContext extends Context {
 
 	@Override
 	public void handle(HttpExchange exchange) {
@@ -26,9 +18,9 @@ class API extends Context {
 		def params = super.mapParams exchangeRequestURI
 		def path = exchange.requestURI.path
 		
-		if( !path.contains("console") && !path.contains("favicon") &&
-			(super.findHeaderParamKey(exchange, "Origin") 		   ||
-			 super.findHeaderParamValue(exchange, "WindowsPowerShell")) )
+		if( !path.contains("console") && !path.contains("favicon") 		&&
+			(super.findHeaderParamKey(exchange, "Origin") 		   		||
+			(super.findHeaderParamValue(exchange, "WindowsPowerShell")  || new Boolean(properties."api.debug"))) )
 			println "${ANSI.GREEN}[API] ${exchange.getRequestMethod()} ${path.replace("/API","")?:"/"} ${ANSI.RESET}-> Params: $params"
 
 		// listHeaders(exchange)

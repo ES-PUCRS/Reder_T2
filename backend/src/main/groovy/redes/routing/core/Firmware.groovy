@@ -3,7 +3,7 @@ package redes.routing.core
 import groovy.transform.ThreadInterrupt
 import groovy.lang.Lazy
 
-import redes.routing.ui.server.Web
+import redes.routing.ui.server.Server
 import redes.routing.Router
 
 @ThreadInterrupt
@@ -30,7 +30,7 @@ class Firmware
 			port = Integer.parseInt(args[0])
 		}
 
-		new Web().start()
+		new Server().start()
 	}
 
 	// Singleton access

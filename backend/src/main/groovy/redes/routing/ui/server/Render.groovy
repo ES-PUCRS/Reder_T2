@@ -5,7 +5,7 @@ import groovy.lang.Lazy
 
 import redes.routing.Router
 
-class Render{
+class Render {
 
 	@Lazy
 	private static Properties properties

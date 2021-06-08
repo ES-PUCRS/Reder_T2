@@ -7,7 +7,7 @@ import redes.routing.ui.server.contexts.*
 import redes.routing.core.Firmware
 import redes.routing.Router
 
-class Web
+class Server
 	extends Thread {
 
 	@Lazy
@@ -22,17 +22,17 @@ class Web
 	    	}
 	}
 
-	private Web () { importProperties() }
+	private Server () { importProperties() }
 
 	public void run() {
 		def port = (Firmware.port as int)
 		def server = HttpServer.create(new InetSocketAddress(port), 0)
 
-		server.createContext("/", new Home())
-		server.createContext("/API", new API())
+		server.createContext("/", new HomeContext())
+		server.createContext("/API", new APIContext())
 
 		server.start()
-		println "Web Server started on port ${port}"
+		println "Server Server started on port ${port}"
 	}
 
 }

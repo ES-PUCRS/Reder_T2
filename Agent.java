@@ -74,7 +74,12 @@ public class Agent {
                     }
                 );
             } else {
-                Runtime.getRuntime().exec("./deploy.sh " + controlPort);
+                Runtime.getRuntime().exec(
+                    new String[] {
+                        "exo-open", "--launch", "TerminalEmulator"
+                        "./deploy.sh " + controlPort
+                    }
+                );
             }
 
 

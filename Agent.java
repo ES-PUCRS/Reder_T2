@@ -1,3 +1,4 @@
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,20 +65,26 @@ public class Agent {
                 controlPort = generatePort();
             } while (!available(controlPort));
 
-            Runtime.getRuntime().exec(
-                new String[]{
-                    "cmd", "/c", "start",
-                    "cmd", "/k",
-                    "deploy.bat " + controlPort
-                }
-            );
+            if(System.getenv("OS").toLowerCase().contains("windows")) {
+                Runtime.getRuntime().exec(
+                    new String[]{
+                        "cmd", "/c", "start",
+                        "cmd", "/k",
+                        "deploy.bat " + controlPort
+                    }
+                );
+            } else {
+                Runtime.getRuntime().exec("./deploy.sh " + controlPort);
+            }
+
+
             return controlPort + "";
         }
 
         private String readBody(HttpExchange httpExchange) {
             InputStream is = httpExchange.getRequestBody();
             byte[] bytes = new byte[0];
-            try { bytes = is.readAllBytes(); }
+            try { bytes = readAllBytes(is); }
             catch(Exception ignored) {}
             if(bytes.length == 0) return null;
             return new String(bytes, StandardCharsets.UTF_8);
@@ -106,6 +113,25 @@ public class Agent {
                     catch (IOException ignored) { /* should not be thrown */ }
             }
             return false;
+        }
+
+        private static byte[] readAllBytes(InputStream is) throws IOException {
+            byte[] buffer = new byte[1024];
+            int reads = -1;
+            byte[] response = null;
+            try {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                while ((reads = is.read(buffer, 0, 1024)) != -1)
+                    outputStream.write(buffer, 0, reads);
+
+                response = outputStream.toByteArray();
+            } catch (Exception ignored) {}
+            finally {
+                try { is.close(); }
+                catch (Exception ignored) {}
+            }
+            return response;
         }
 
     }

@@ -83,7 +83,7 @@ public class Agent {
             }
 
 
-            return controlPort + "";
+            return new String(controlPort);
         }
 
         private String readBody(HttpExchange httpExchange) {

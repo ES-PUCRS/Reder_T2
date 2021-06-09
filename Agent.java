@@ -115,7 +115,7 @@ public class Agent {
 
                 if (ss != null)
                     try { ss.close(); }
-                    catch (IOException ignored) { /* should not be thrown */ }
+                    catch (IOException ignored) { }
             }
             return false;
         }

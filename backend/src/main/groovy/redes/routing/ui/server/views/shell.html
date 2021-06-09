@@ -10,76 +10,122 @@
 
 <body>
 	<script>
+		
+		var authority = 'http://localhost:'+location.port+'/';
+
 		$('body').terminal({
 
-		  //   free: function(file){
-				// fetch('http://localhost:8080/free?file=' + file)
-		  //           .then(r => r.text())
-    //     			.then(exp => { if(exp != ""){ return exp } });
-		  //   },
 
-		  //   load: function(...args){
-		  //   	const options = $.terminal.parse_options(args);
-		  //   	let params
-		  //   	let urn
-
-		  //   			if(options.memory)	{	urn = "cpu_load_memory"; params = options.memory; }
-		  //   	else 	if(options.cpu)		{	urn = "cpu_load"; params = options.cpu; }
-		  //   	else 	if(options.direct)	{ params = options.direct; }
-		  //   	else						{ this.error('Invalid argument'); return }
-
-
-		  //   	if(options.direct){ 
-		  //   		return fetch('http://localhost:8080/cpu_load_memory?file=' + params)
-    //     				.then( res => res.text() )
-    //     				.then( exp => {
-				// 				if(exp == ""){
-				// 					return fetch('http://localhost:8080/cpu_load?file=' + params)
-				// 						.then( re => re.text() )
-				// 						.then( ex => { if(ex != ""){ return ex } } )
-				// 				} else { return exp	}
-    // 						});
-		  //   	} else {
-		  //   		return fetch('http://localhost:8080/' + urn + '?file=' + params)
-		  //           			.then(res => res.text())
-		  //           			.then(exp => { if(exp != ""){ return exp } });
-		  //   	}
-		  //   },
-
-		  //   dump: function(...args) {
-		  //   	const options = $.terminal.parse_options(args);
-		  //   	let params
-		  //   	let urn
-
-		  //   			if(options.memory != undefined) { urn = "dump_memory"; params = options.memory; }
-		  //   	else 	if(options.pages  != undefined)	{ urn = "dump_pages";  params = options.pages;  }
-		  //   	else 	if(options.registers)			{ urn = "dump_registers"; 					  	}
-		  //   	else									{ this.error('Invalid argument'); return 		}
-
-		  //   	if(options.registers){
-		  //   		if(options.registers != true){
-		  //   			this.error('This method does not contains argument'); return 
-		  //   		}
-		  //   	}
-
-	   //  		return fetch('http://localhost:8080/' + urn + '?params=' + params)
-	   //          			.then(res => res.text());
-		  //   },
-
-
-		    // get: async function(path) {
-		    //     let res = await fetch(path);
-		    //     return res.text();
-    		// },
-
-
-
-		    fetch: function(file){
-				fetch('http://localhost:'+location.port+'/API?port='+location.port)
-		            .then(r => r.text())
+		    ping: function(...args) {
+		    	this.echo('On development')
 		    },
 
+
+		    tracert: function(...args) {
+		    	this.echo('On development')
+		    },
 		    
+
+		    show: function(...args) {
+		    	var command = 'show'
+		    	if(!(args[0] == 'ip' && args[1] == 'route')){
+		    		for (var i = 0; i < args.length; i++)
+	    			{ command += ' ' + args[i]; }
+					this.error('Command \'' + command + '\' Not Found!')
+					return
+		    	}
+
+	    		return fetch(authority + 'showiproute')
+        					.then(res => res.text());
+		    },
+
+
+		    install: function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'install'
+		    	let params
+
+    			if(args[0] == 'module') { params = 'object=module'; }
+		    	else					{ this.error('Invalid argument'); return }
+
+	    		return fetch(authority + urn + '?' + params)
+        					.then(res => res.text());
+		    },
+
+
+		    list: function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'list'
+		    	let params
+
+    			if(args[0] == 'module') { params = 'object=module'; }
+		    	else					{ this.error('Invalid argument'); return }
+
+	    		return fetch(authority + urn + '?' + params)
+        					.then(res => res.text());
+		    },
+
+
+		    start: function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'start'
+		    	let params
+			
+
+    			if(args[0] == 'module') {
+			    	if(args[1] == undefined){
+			    		this.error('Missing target parameter')
+						return
+			    	}
+    				params = 'object=module&target=' + args[1];
+    			}
+		    	else					{ this.error('Invalid object'); 	return 	  }
+
+	    		fetch(authority + urn + '?' + params)
+					.then(res => res.text());
+		    },
+
+
+		    kill: function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'kill'
+		    	let params
+			
+
+    			if(args[0] == 'module') {
+			    	if(args[1] == undefined){
+			    		this.error('Missing target parameter')
+						return
+			    	}
+    				params = 'object=module&target=' + args[1];
+    			}
+		    	else					{ this.error('Invalid object'); 	return 	  }
+
+	    		fetch(authority + urn + '?' + params)
+					.then(res => res.text());
+		    },
+
+
+			remove: function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'remove'
+		    	let params
+			
+
+    			if(args[0] == 'module') {
+			    	if(args[1] == undefined){
+			    		this.error('Missing target parameter')
+						return
+			    	}
+    				params = 'object=module&target=' + args[1];
+    			}
+		    	else					{ this.error('Invalid object'); 	return 	  }
+
+	    		fetch(authority + urn + '?' + params)
+					.then(res => res.text());
+		    },
+
+
 		    cls: function() {
 		        this.exec('clear');
 		        this.echo('Redes de computadores & Laboratorio de redes,\n'+
@@ -89,18 +135,48 @@
 
 		    help: function(){
 		    	this.echo(
-		    		">> Help section ~" +
+		    		">> Help section ~"
 		    		
-		    		"\n [...] Optiona params"+
-		    		"\n <...> Needed params"+
+		    		+	"\n [...] Optiona params"
+		    		+	"\n <...> Needed params"
+		    		+	"\n objects: module | ..."
+		    		+	"\n target:  socket | ..."
 
-		    		"\n\n > cls"+
-		    		"\n Clear the terminal;"+
+		    		+	"\n\n > cls"
+		    		+	"\n Clear the terminal;" 
+		    
+		    		+	"\n\n > ping"
+		    		+	"\n On development;"
 		    		
-					"\n\n > ping <dst port>"+
-					"\n Send a Packet Internet Grouper to the desired destination.\n"
+		    		+	"\n\n > tracert"
+		    		+	"\n On development;"
+		    		
+		    		+	"\n\n > show <object> <target>"
+		    		+	"\n Clear the terminal;"
+		    		
+		    		+	"\n\n > install <object>"
+		    		+	"\n Install the new object and return the ID;"
+		    		
+		    		+	"\n\n > list <object>"
+		    		+	"\n List all objects of the firmware;"
+
+		    		+	"\n\n > start <object> <target>"
+		    		+	"\n Call the inactive object to run again;"
+
+		    		+	"\n\n > kill <object> <target>"
+		    		+	"\n Finalize the object target;"
+
+		    		+	"\n\n > remove <object> <target>"
+		    		+	"\n Kill the object and remove from firmware;"
+		    		
 	    		);
-		    }
+		    },
+
+
+		    authority: function() {
+		    	this.echo(authority)
+		    },
+
 
 		}, {
 			checkArity: false,

@@ -82,8 +82,7 @@ public class Agent {
                 );
             }
 
-
-            return new String(controlPort);
+            return String.valueOf(controlPort);
         }
 
         private String readBody(HttpExchange httpExchange) {

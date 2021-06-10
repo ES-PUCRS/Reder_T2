@@ -75,6 +75,7 @@ abstract class Context implements HttpHandler {
 		try {
 			def type
 			if( !(type = getResponseType(respond)) ) {
+				println "${type}: ${respond}"
 				sendResponseHeaders(exchange, 404)
 				return
 			}

@@ -39,7 +39,7 @@ class HomeContext extends Context {
 			
 			try {
 				try { respond = "${path?.substring(1)?.replaceAll(".*\\.","")?:"index"}"(path, params) }
-				catch(ignored){ respond = HomeRender."${path?.substring(1)?.replaceAll("\\..*","")}"(params) }
+				catch(ignored) { respond = HomeRender."${path?.substring(1)?.replaceAll("\\..*","")}"(params) }
 			} catch (ignore) { }
 			
 

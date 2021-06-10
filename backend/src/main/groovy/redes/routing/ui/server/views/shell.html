@@ -12,9 +12,14 @@
 	<script>
 		
 		var authority = 'http://localhost:'+location.port+'/';
+		var last = '';
 
 		$('body').terminal({
 
+		    $authority: function() 	{ return authority 	},
+		    $last: function()		{
+		    	return last
+		    },
 
 		    ping: function(...args) {
 		    	this.echo('On development')
@@ -26,43 +31,44 @@
 		    },
 		    
 
-		    show: function(...args) {
-		    	var command = 'show'
-		    	if(!(args[0] == 'ip' && args[1] == 'route')){
-		    		for (var i = 0; i < args.length; i++)
-	    			{ command += ' ' + args[i]; }
-					this.error('Command \'' + command + '\' Not Found!')
-					return
-		    	}
-
-	    		return fetch(authority + 'showiproute')
-        					.then(res => res.text());
-		    },
-
-
-		    install: function(...args) {
-		    	const options = $.terminal.parse_options(args)
+		    install: async function(...args) {
 		    	let urn = 'install'
 		    	let params
 
     			if(args[0] == 'module') { params = 'object=module'; }
 		    	else					{ this.error('Invalid argument'); return }
 
-	    		return fetch(authority + urn + '?' + params)
-        					.then(res => res.text());
+	    		let res = await fetch(authority + urn + '?' + params)
+	    		res = await res.json()
+    			
+    			if (res.error != undefined) {
+    				this.error(res.error)
+    			} else {
+    				last = res.content
+	    			return "Generated module port: " + last
+    			}
 		    },
 
 
-		    list: function(...args) {
-		    	const options = $.terminal.parse_options(args)
+		    show: async function(...args) {
 		    	let urn = 'list'
 		    	let params
+	    		let json
 
-    			if(args[0] == 'module') { params = 'object=module'; }
-		    	else					{ this.error('Invalid argument'); return }
+    			if 		(args[0] == 'modules' ) { params = 'object=modules' }
+    			else if (args[0] == 'ip' && args[1] == 'route') {
+    				params = 'object=routes'
+    			}
+		    	else { this.error('Invalid argument'); return }
+	    		
+	    		let res = await fetch(authority + urn + '?' + params)
+	    		res = await res.json()
 
-	    		return fetch(authority + urn + '?' + params)
-        					.then(res => res.text());
+		    	if(res?.error != undefined) {
+		    		this.error(res.error);
+		    	} else {
+		    		return res.content
+		    	}
 		    },
 
 
@@ -71,15 +77,22 @@
 		    	let urn = 'start'
 		    	let params
 			
-
     			if(args[0] == 'module') {
-			    	if(args[1] == undefined){
+    				params = 'object=module'
+			    	if(args[1] == undefined) {
 			    		this.error('Missing target parameter')
 						return
 			    	}
-    				params = 'object=module&target=' + args[1];
+			    	if(args[1] == '$last') {
+			    		if(last == "") {
+							this.error('$last is not defined.')
+							return;
+						}
+						args[1] = last
+					}
+    				params += '&target=' + args[1];
     			}
-		    	else					{ this.error('Invalid object'); 	return 	  }
+		    	else { this.error('Invalid object'); return }
 
 	    		fetch(authority + urn + '?' + params)
 					.then(res => res.text());
@@ -97,9 +110,16 @@
 			    		this.error('Missing target parameter')
 						return
 			    	}
+			    	if(args[1] == '$last') {
+			    		if(last == "") {
+							this.error('$last is not defined.')
+							return;
+						}
+						args[1] = last
+					}
     				params = 'object=module&target=' + args[1];
     			}
-		    	else					{ this.error('Invalid object'); 	return 	  }
+		    	else { this.error('Invalid object'); return }
 
 	    		fetch(authority + urn + '?' + params)
 					.then(res => res.text());
@@ -117,12 +137,110 @@
 			    		this.error('Missing target parameter')
 						return
 			    	}
+			    	if(args[1] == '$last') {
+			    		if(last == "") {
+							this.error('$last is not defined.')
+							return;
+						}
+						args[1] = last
+					}
     				params = 'object=module&target=' + args[1];
     			}
 		    	else					{ this.error('Invalid object'); 	return 	  }
 
 	    		fetch(authority + urn + '?' + params)
 					.then(res => res.text());
+		    },
+
+
+			send: async function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'send'
+				let params
+
+    			if(args[0] == 'message') {
+		    		params = 'object=message&'
+			    	if(args[1] == undefined){
+			    		this.error('Missing destination parameter')
+						return
+			    	}
+			    	if(args[2] == 'to') {
+				    	if(args[3] == undefined){
+				    		this.error('Missing destination parameter')
+							return
+				    	}
+			    	} else {
+			    		this.error('Missing connection separator (to)');
+			    		return
+			    	}
+
+
+					if(args[1] == '$last' || args[3] == '$last') {
+						this.error('Internal messages do not need to be sent')
+					}
+
+    				params += 'destination=' + args[3] + '&' ;
+    				params += 'content='+ args[1]	   ;
+    			}
+		    	else { this.error('Invalid action'); return }
+
+	    		let res = await fetch(authority + urn + '?' + params)
+	    		res = await res.json()
+
+		    	if(res.error != undefined) {
+		    		this.error(res.error);
+		    	}
+		    },
+
+
+			wire: async function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let urn = 'wire'
+				let params
+
+    			if(args[0] == 'module') {
+		    		params = 'object=module&'
+			    	if(args[1] == undefined){
+			    		this.error('Missing index parameter')
+						return
+			    	}
+			    	if(args[2] == 'on') {
+				    	if(args[3] == undefined){
+				    		this.error('Missing target parameter')
+							return
+				    	}
+			    	} else {
+			    		this.error('Missing connection separator (on)');
+			    		return
+			    	}
+
+
+					if(args[1] == '$last') {
+						if(last == "") {
+							this.error('$last is not defined.')
+							return;
+						}
+						args[1] = last
+					}
+					if(args[3] == '$last') {
+						if(last == "") {
+							this.error('$last is not defined.')
+							return;
+						}
+						args[3] = last
+					}
+
+    				params += 'index=' + args[1] + '&' ;
+    				params += 'target='+ args[3]	   ;
+    			}
+		    	else { this.error('Invalid object'); return }
+
+	    		let res = await fetch(authority + urn + '?' + params)
+	    		res = await res.json();
+
+		    	if(res.error != undefined){
+		    		this.error(resres.error);
+		    	}
 		    },
 
 

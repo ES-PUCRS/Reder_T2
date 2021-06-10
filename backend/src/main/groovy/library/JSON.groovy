@@ -18,23 +18,23 @@ class JSON {
 
 	def static append(String json, Map map)
 				throws IllegalFormatException {
-		validate(json)
+		json = verify(json)
 		json.replaceAll(" }", ",${parce(map).substring(1)}")
 	}
 
 
 	def static append(String json, String key, String value)
 								throws IllegalFormatException {
-		validate(json) 
+		json = verify(json) 
 		json.replaceAll(" }", ",${parse(key, value).substring(1)}")
 	}
 
 
 	// TODO
-	def static validate(String json) {
+	def static verify(String json) {
 		if(false)
-			throw new IllegalFormatException("The json is not correctly formated")
-		true
+			throw new IllegalFormatException("The json is incorrectly formated and can not be auto fixed")
+		json
 	}
 
 

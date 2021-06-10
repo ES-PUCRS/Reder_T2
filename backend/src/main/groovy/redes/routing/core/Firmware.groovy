@@ -55,6 +55,7 @@ class Firmware
 
 	// Singleton constructor
 	private Firmware() {
+
 		domain = InetAddress.getByName("localhost")
 		routingTable = new HashMap()
 		modules = new HashMap()
@@ -67,13 +68,13 @@ class Firmware
 	}
 
 
-	def installModule() {
-		Integer port
+	def installModule(Integer port = null) {
+		try {
+			do { port = available(port) } while ( !port )
 
-		do { port = available() } while ( !port )
+			modules.put(port, new SocketModule( port )) }
 
-		try { modules.put(port, new SocketModule( port )) }
-		catch (SocketException se) { port = null; se.printStackTrace() }
+		catch (SocketException se) { return se.getLocalizedMessage() }
 
 		port
 	}
@@ -141,13 +142,8 @@ class Firmware
     	return (new Random().nextInt(65353-begin) + begin)
     }
 
-	private Integer available() { return available(null, true) }
-    private boolean available(Integer port) { return available(port, false) }
-    private Integer available(Integer port, boolean recursive) {
-    	if(recursive){
-    		if( port ) return port
-    		port = generatePort()
-    	}
+    private Integer available(Integer port = null) {
+		if(!port) port = generatePort()
 
         ServerSocket ss = null
         DatagramSocket ds = null
@@ -158,7 +154,7 @@ class Firmware
             ds.setReuseAddress(true)
             return port;
         }
-        catch (IOException e) {}
+        catch (IOException e) { }
         finally {
             if (ds)
                 ds.close()
@@ -167,7 +163,7 @@ class Firmware
                 try { ss.close() }
                 catch (IOException ignored) { }
         }
-        return available(null)
+        return available()
     }
 
 }

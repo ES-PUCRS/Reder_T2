@@ -39,20 +39,25 @@ class HomeRender {
 		def root = new File(properties."ui.views.path")
 		def file = new File(root, "template.json")
 		def response = ""
+		def port
+
+		if (map?.get("port"))
+			port = Integer.parseInt(map?.get("port")?[0])
 		
 		try {
 			if(map.get("object")[0] == "module")
 				response += JSON.parse(
 								"content",
 								Firmware.getInstance()
-										.installModule() as String
+										.installModule(port) as String
 							)
 			else
 				response = JSON.parse("error", "Install object was not defined")
-		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
+		} catch (e) { e.printStackTrace() 
+			response = JSON.parse("error", e.getLocalizedMessage()) }
 
 		def binding = [
-			'variable' : response
+			'variable' : JSON.verify(response)
 		]
 
 		new SimpleTemplateEngine()
@@ -98,7 +103,7 @@ class HomeRender {
 		// println response
 
 		def binding = [
-			'variable' : response
+			'variable' : JSON.verify(response)
 		]
 
 		new SimpleTemplateEngine()
@@ -134,7 +139,7 @@ class HomeRender {
 		if(response == "{ \"error\": \"null\" }")
 			response = "{}"
 
-		def binding = ['variable':response]
+		def binding = ['variable': JSON.verify(response)]
 		new SimpleTemplateEngine()
 			.createTemplate(file)
 			.make(binding)
@@ -165,7 +170,7 @@ class HomeRender {
 		if(response == "null")
 			response = "{}"
 
-		def binding = ['variable':response]
+		def binding = ['variable': JSON.verify(response)]
 		new SimpleTemplateEngine()
 			.createTemplate(file)
 			.make(binding)

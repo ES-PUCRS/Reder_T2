@@ -17,9 +17,45 @@
 		$('body').terminal({
 
 		    $authority: function() 	{ return authority 	},
-		    $last: function()		{
-		    	return last
+		    $last: function()		{ return last		},
+
+		    // Facilitar minha vida testando. Moh mão fazer esse wire.
+		    setup: async function() {
+				let res = await fetch(
+					'http://localhost:1010/install?object=module&port=1011'
+				)
+	    		res = await res.json()
+		    	if (res.error != undefined) {
+    				this.error(res.error)
+    			}
+
+    			try {
+	    			let ras = await fetch(
+	    				'http://localhost:1020/install?object=module&port=1021'
+	    			)
+	    			ras = await ras.json()
+			    	if (ras.error != undefined) {
+	    				this.error(ras.error)
+	    			}
+    			} catch (e) {}
+				try {
+					let rus = await fetch(
+						'http://localhost:1010/wire?object=module&index=1011&target=1021'
+					)
+		    		rus = await rus.json()
+			    	if (rus.error != undefined) {
+	    				this.error(rus.error)
+	    			}
+    			} catch (e) {
+    				this.error("Error wiring modules -> " + e)
+					return
+    			}
+
+    			last = '1011'
+    			return '\tdone'
+
 		    },
+
 
 		    ping: function(...args) {
 		    	this.echo('On development')
@@ -32,11 +68,15 @@
 		    
 
 		    install: async function(...args) {
+		    	const options = $.terminal.parse_options(args)
 		    	let urn = 'install'
 		    	let params
 
-    			if(args[0] == 'module') { params = 'object=module'; }
-		    	else					{ this.error('Invalid argument'); return }
+    			if 		(args[0] == 'module') 	{ params = 'object=module' }
+		    	else							{ this.error('Invalid argument'); return }
+		    	try {
+    				if (options.port) { params += '&port=' + options.port }
+		    	} catch (e) { this.error(e) }
 
 	    		let res = await fetch(authority + urn + '?' + params)
 	    		res = await res.json()
@@ -55,7 +95,7 @@
 		    	let params
 	    		let json
 
-    			if 		(args[0] == 'modules' ) { params = 'object=modules' }
+    			if 		(args[0] == 'module' ) { params = 'object=modules' }
     			else if (args[0] == 'ip' && args[1] == 'route') {
     				params = 'object=routes'
     			}
@@ -291,9 +331,6 @@
 		    },
 
 
-		    authority: function() {
-		    	this.echo(authority)
-		    },
 
 
 		}, {

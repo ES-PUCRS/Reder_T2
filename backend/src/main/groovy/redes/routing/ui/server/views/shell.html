@@ -5,53 +5,63 @@
 	<title>Redes/Lab: Shell</title>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://unpkg.com/jquery.terminal/js/jquery.terminal.min.js"></script>
+	<script src="https://unpkg.com/jquery.terminal/js/autocomplete_menu.js"></script>
 	<link rel="stylesheet" href="https://unpkg.com/jquery.terminal/css/jquery.terminal.min.css"/>
 </head>
 
 <body>
 	<script>
-		
 		var authority = 'http://localhost:'+location.port+'/';
 		var last = '';
 
 		$('body').terminal({
 
-		    $authority: function() 	{ return authority 	},
-		    $last: function()		{ return last		},
+		    $authority: function() 	{ return 'Router authority: '   + authority   },
+		    $last: function()		{ return 'Last module port generated: '+ last },
+
 
 		    // Facilitar minha vida testando. Moh mão fazer esse wire.
 		    setup: async function() {
+    			let target = ''
+
 				let res = await fetch(
 					'http://localhost:1010/install?object=module&port=1011'
 				)
 	    		res = await res.json()
 		    	if (res.error != undefined) {
     				this.error(res.error)
-    			}
+    			} else 
+    				last = res.content
 
     			try {
-	    			let ras = await fetch(
-	    				'http://localhost:1020/install?object=module&port=1021'
+	    			res = await fetch(
+	    				'http://localhost:1020/API/install?object=module&port=1021'
 	    			)
-	    			ras = await ras.json()
-			    	if (ras.error != undefined) {
-	    				this.error(ras.error)
-	    			}
-    			} catch (e) {}
-				try {
-					let rus = await fetch(
-						'http://localhost:1010/wire?object=module&index=1011&target=1021'
-					)
-		    		rus = await rus.json()
-			    	if (rus.error != undefined) {
-	    				this.error(rus.error)
+	    			res = await res.json()
+			    	if (res.error != undefined) {
+	    				this.error(res.error)
+	    				return
+	    			} else {
+	    				target = res.content
 	    			}
     			} catch (e) {
-    				this.error("Error wiring modules -> " + e)
+    				this.error('Error on 1020 api request -> ' + e.message)
+    				return
+    			}
+				try {
+					res = await fetch(
+						'http://localhost:1010/wire?object=module&index='+last+'&target='+target
+					)
+		    		res = await res.json()
+			    	if (res.error != undefined) {
+	    				this.error(res.error)
+	    				return
+	    			}
+    			} catch (e) {
+    				this.error("Error wiring modules -> " + e.message)
 					return
     			}
 
-    			last = '1011'
     			return '\tdone'
 
 		    },
@@ -238,12 +248,20 @@
 		    	let urn = 'wire'
 				let params
 
-    			if(args[0] == 'module') {
+				if (args[1] == undefined) {
+		    		this.error('Missing index parameter')
+					return
+		    	} else if (args[1] == '$last') {
+					if(last == "") {
+						this.error('$last is not defined.')
+						return;
+					}
+					args[1] = last
+				}
+
+    			if (args[0] == 'module') {
 		    		params = 'object=module&'
-			    	if(args[1] == undefined){
-			    		this.error('Missing index parameter')
-						return
-			    	}
+			    	
 			    	if(args[2] == 'on') {
 				    	if(args[3] == undefined){
 				    		this.error('Missing target parameter')
@@ -252,26 +270,15 @@
 			    	} else {
 			    		this.error('Missing connection separator (on)');
 			    		return
-			    	}
-
-
-					if(args[1] == '$last') {
-						if(last == "") {
-							this.error('$last is not defined.')
-							return;
-						}
-						args[1] = last
-					}
+			    	}					
 					if(args[3] == '$last') {
-						if(last == "") {
-							this.error('$last is not defined.')
-							return;
-						}
-						args[3] = last
+						this.error('Can not wire on self module.')
 					}
 
-    				params += 'index=' + args[1] + '&' ;
-    				params += 'target='+ args[3]	   ;
+					params += 'index='  + args[1];
+    				params += '&target='+ args[3];
+    			} else if (args[0] == 'cut') {
+		    		params = 'object=cut&index='+args[1]
     			}
 		    	else { this.error('Invalid object'); return }
 
@@ -279,8 +286,45 @@
 	    		res = await res.json();
 
 		    	if(res.error != undefined){
-		    		this.error(resres.error);
+		    		this.error(res.error);
 		    	}
+		    },
+
+		    health: async function(...args) {
+		    	const options = $.terminal.parse_options(args)
+		    	let port
+
+				if (options.port) {
+					port = options.port + '/API'
+				}
+				else port = location.port
+
+
+				let res = await fetch(
+					'http://localhost:'+port+'/health'
+				)
+	    		res = await res.json()
+
+		    	if(res.content != undefined){
+		    		this.echo(res.content);
+		    	}	    		
+		    },
+
+
+		    curl: async function(...args) {
+		    	let url = args[0]
+		    	if (!url.startsWith("http://"))
+		    		url = 'http://' + args[0]
+		    	
+		    	const request = new Request(url);
+	    		let res = await fetch(request)
+	    		res = await res.json()
+    			
+    			if (res.error != undefined) {
+    				this.error(res.error)
+    			} else {
+	    			return res
+    			}
 		    },
 
 

@@ -17,6 +17,9 @@ class Firmware
 
 	// Instance variables -------------------------------------------------------------
 
+		// #DEFINE
+		private static final int distance = 0
+		private static final int nextHope = 1
 
 		// Local host domain address
 		public static InetAddress domain
@@ -29,10 +32,11 @@ class Firmware
 		private static Firmware instance
 
 		// Module connection Map<port, socket connection>
-		private static Map<int, SocketException> modules
+		private static Map<Integer, SocketException> modules
 
 		// Rounting list table Map<destination, int[2]> -> [0]distance & [1]next hop
 		private static Map<Integer, Integer[]> routingTable
+		private static Map<Integer, Integer> wiring
 
 	// --------------------------------------------------------------------------------
 
@@ -55,16 +59,16 @@ class Firmware
 
 	// Singleton constructor
 	private Firmware() {
-
-		domain = InetAddress.getByName("localhost")
-		routingTable = new HashMap()
-		modules = new HashMap()
-
 	    this.getClass()
 	    	.getResource( Router.propertiesPath )
 	    	.withInputStream {
 	        	properties.load(it)
 	    	}
+
+		domain = InetAddress.getByName(properties."router.domain")
+		routingTable = new HashMap()
+		modules = new HashMap()
+		wiring = new HashMap()
 	}
 
 
@@ -83,19 +87,23 @@ class Firmware
 
 	def send(int destination, String message) {
 		try { 
-			modules.get(routingTable.get(destination)[])
+			modules.get(routingTable.get(destination)[nextHope])
 				   .send(message)
 		} catch (e) { return e.getLocalizedMessage() }
 	}
+
 
 
 	def wireModule(int module, int wire) {
 		try {
 			modules.get(module)
 				   .wire(wire)
-			
-			reroute(wire, 0, module)
-		} catch (e) { return e.getLocalizedMessage() }
+		} catch (Exception e) { return e.getLocalizedMessage() }
+	}
+
+	def unwireModule(int module) {
+		modules.get(module)
+			   .unwire()
 	}
 
 	def listModules() {
@@ -125,13 +133,16 @@ class Firmware
 		routes
 	}
 
+	protected void reroute(int node) {
+		routingTable.remove(node)
+	}
 	protected void reroute(int dst, int dist, int module) {
 		if(routingTable.containsKey(dst)) {
 			Integer[] info = routingTable.get(dst)
 			int distance = dist
-			if(info[0] < dist)
-				distance = info[0]
-			routingTable.put(dst, distance, module)
+			if(info[this.distance] < dist)
+				distance = info[this.distance]
+			routingTable.put(dst, [distance, module])
 		} else {
 			routingTable.put(dst, [dist, module])
 		}

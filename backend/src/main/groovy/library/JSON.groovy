@@ -4,12 +4,14 @@ import java.util.IllegalFormatException
 
 class JSON {
 
-
-	// TODO
 	def static parse(Map map) {
-		"{ \"${map.toString()}\" }"
-	}
+		def json = ""
+		map.each { key, value ->
+    		json += ", \"${key}\": \"${value}\""
+		}
 
+		"{${json.substring(1)} }"
+	}
 
 	def static parse(String key, String value) {
 		"{ \"${key}\": \"${value}\" }"
@@ -19,14 +21,14 @@ class JSON {
 	def static append(String json, Map map)
 				throws IllegalFormatException {
 		json = verify(json)
-		json.replaceAll(" }", ",${parce(map).substring(1)}")
+		"${json.substring(0, json.length() - 2)},${parce(map).substring(1)}"
 	}
 
 
 	def static append(String json, String key, String value)
 								throws IllegalFormatException {
 		json = verify(json) 
-		json.replaceAll(" }", ",${parse(key, value).substring(1)}")
+		"${json.substring(0, json.length() - 2)},${parse(key, value).substring(1)}"
 	}
 
 
@@ -36,6 +38,5 @@ class JSON {
 			throw new IllegalFormatException("The json is incorrectly formated and can not be auto fixed")
 		json
 	}
-
 
 }

@@ -12,11 +12,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { RouterComponent } from './home/router/router.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
-    AppComponent
+    AppComponent,
+    RouterComponent
   ],
   imports: [
     MatButtonModule,

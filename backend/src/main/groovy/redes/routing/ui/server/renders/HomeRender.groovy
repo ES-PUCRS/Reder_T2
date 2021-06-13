@@ -1,7 +1,6 @@
 package redes.routing.ui.server.renders
 
 import groovy.text.SimpleTemplateEngine 
-import groovy.lang.Lazy
 
 import redes.routing.core.RouterConnection
 import redes.routing.core.Firmware

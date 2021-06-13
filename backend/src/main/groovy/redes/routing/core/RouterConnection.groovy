@@ -12,35 +12,38 @@ import library.Protocol
 class RouterConnection {
 
 	static def requestModule(int request) {
-		HttpURLConnection conn = setConnection(request, 'connect')
+		try {
+			HttpURLConnection conn = setConnection(request, 'health')
+			conn.setRequestMethod("GET")
 
-		if(conn.getResponseMessage == 'OK') {
-			def reader = new BufferedReader(new InputStreamReader((conn.getInputStream())))
-			def builder = new StringBuilder()
-			String output
+			println conn.getResponseMessage()
+			if(conn.getResponseMessage() == 'OK') {
+				def reader = new BufferedReader(new InputStreamReader((conn.getInputStream())))
+				def builder = new StringBuilder()
+				String output
 
-			while ((output = reader.readLine()) != null) {
-				builder.append(output)
+				while ((output = reader.readLine()) != null) {
+					builder.append(output)
+				}
+				def str = builder.toString()
+				println str
+				def map = Protocol.packetHeader(str)
+				println map
 			}
-			def str = builder.toString()
-
-			def map = Protocol.packetHeader(str)
-			println map
-		}
+		} catch(Exception e) { e.printStackTrace() }
 	}
 
 	static def setConnection(int target, String uri, def params = null) {
-		URL url = new URL("http://localhost:${target}/API/${uri}${defParams(params)}")
+		URL url = new URL("http://localhost:${target}/API/${uri}")
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection()
-		conn.setRequestMethod("GET")
 		conn
 	}
 
 	static def defParams(def params){
 		if(!params){
-			""
+			return ""
 		} else {
-			"?"
+			return "?"
 		}
 	}
 

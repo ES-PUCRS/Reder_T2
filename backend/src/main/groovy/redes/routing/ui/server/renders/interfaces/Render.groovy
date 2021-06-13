@@ -7,18 +7,8 @@ import redes.routing.Router
 abstract class Render {
 		
 	private static final Properties properties = importProperties()
-	private static templateJson
-	private static root
-
-	
-	def static install(def map)	{}
-	def static remove(def map)	{}
-	def static start(def map)	{}
-	def static wire(def map)	{}
-	def static kill(def map)	{}
-	def static list(def map)	{}
-
-	
+	private static templateJson = new File(root, "template.json")
+	private static root = new File(properties."ui.views.path")
 
 	/*
 	 *	Build the response to send to the context to be responded
@@ -38,6 +28,7 @@ abstract class Render {
 	 *	return properties object
 	 */
 	def static importProperties(){
+		println "render properties"
 		Properties properties = new Properties();
 		new Object() {}
 	    	.getClass()
@@ -45,8 +36,7 @@ abstract class Render {
 	    	.withInputStream {
 	        	properties.load(it)
 	    	}
- 		templateJson = new File(root, "template.json")
-	    root = new File(properties."ui.views.path")
+	    
 	    properties
 	}
 }

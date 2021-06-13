@@ -11,13 +11,15 @@ import { BackendService } from '../services/backend.service';
 export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService) {
   }
-
   
-
   @ViewChild('trigger', { static: true })
   trigger: MatMenuTrigger | undefined;
+  contextMenu: boolean = false;
+  contextMenuY: number = -1;
+  contextMenuX: number = -1;
+  
 
-  menuOptions: Array<String> = ["option 1", "option 2", "option 3"];
+  
   selectedOption: string = "no Option selected";
   routerCount: number = 0;
   routers: Array<{name: string, port: string}> = [];
@@ -31,10 +33,11 @@ export class HomeComponent implements OnInit {
       menu.style.left = event.pageX + 5 + 'px';
       menu.style.top = event.pageY + 5 + 'px';
       this.trigger?.openMenu();
+      console.log("asd");
     }
   }
-  
-  ngOnInit(): void { 
+
+  ngOnInit(): void {
     this.routerCount = window.localStorage.length;
     let objectKeys = Object.keys(window.localStorage);
     for(let i = 0; i < window.localStorage.length; i++){
@@ -46,24 +49,23 @@ export class HomeComponent implements OnInit {
     }
     console.log(this.routers);
   }
-  // onMenuClosed():void {
-  //   var menu = document.getElementById('menuBtn');
-  //       if (menu) {
-  //           menu.style.display = 'none';
-  //       }
-  // }
+
+
+  open(event: MouseEvent): void 
+  {
+    this.contextMenuX=event.clientX
+    this.contextMenuY=event.clientY
+    this.contextMenu=true;
+  }
+  disableContextMenu():void {
+      this.contextMenu=false;
+  }
 
   addTextTo(selectedOpn: any): void {
     this.selectedOption = selectedOpn + ' selected';
   }
 
-
-  open({ x, y }: MouseEvent) {
-    console.log(x, y);
-    // this.menu?.openMenu();
-  }
-
-  sendGet(){
+  getOnRouter(){
     let res: any;
     this.backendService.restGet().subscribe( data => {
       console.log(data);

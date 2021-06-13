@@ -21,7 +21,7 @@ public class Agent {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Agent running on 8080");
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(4201), 0);
         server.createContext("/", new MyHandler());
         server.setExecutor(null);
         server.start();
@@ -74,11 +74,15 @@ public class Agent {
                     }
                 );
             } else {
-                Runtime.getRuntime().exec("./deploy.sh " + controlPort);
+                Runtime.getRuntime().exec(
+                    new String[] {
+                        "exo-open", "--launch", "TerminalEmulator",
+                        "./deploy.sh " + controlPort
+                    }
+                );
             }
 
-
-            return controlPort + "";
+            return String.valueOf(controlPort);
         }
 
         private String readBody(HttpExchange httpExchange) {
@@ -110,7 +114,7 @@ public class Agent {
 
                 if (ss != null)
                     try { ss.close(); }
-                    catch (IOException ignored) { /* should not be thrown */ }
+                    catch (IOException ignored) { }
             }
             return false;
         }

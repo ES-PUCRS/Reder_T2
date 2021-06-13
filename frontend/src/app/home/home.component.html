@@ -5,24 +5,32 @@
       <label>
         Server List
       </label>
-      <button (click)="sendPost();" id="addButton" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+      <button (click)="sendPost();" id="addButton" mat-mini-fab color="primary"
+        aria-label="Example icon button with a menu icon">
         <mat-icon>add</mat-icon>
       </button>
     </div>
 
     <div class="routersList">
-      <!-- <div class="routerInList" *ngFor="let router of routers"> 
+      <div class="routerInList" *ngFor="let router of routers">
         <label>
           {{router.name}}
         </label>
-      </div> -->
+      </div>
     </div>
 
   </div>
-  <div class="box-boundary" (contextmenu)="open($event); $event. preventDefault();">
-    <div class="box-box" cdkDragBoundary=".box-boundary" cdkDrag>
-      I can only be dragged within the dotted container
-    </div>
+  <!-- THis div below represents alls ROUTERS -->
+  <div class="box-boundary" (click)="disableContextMenu()" oncontextmenu="return false;">
+    <ng-template></ng-template>
+
+    <app-router *ngFor='let router of routers' router_port={{router.port}}
+      (contextmenu)="open($event); $event.preventDefault();"
+      ></app-router>
+  </div>
+  <!-- This div below represents the CONTEXT MENU, Appears when using the RIGHT BUTTON -->
+  <div *ngIf="contextMenu">
+    <app-context-menu [x]="contextMenuX" [y]="contextMenuY"></app-context-menu>
   </div>
 
   <!-- <button mat-icon-button  aria-label="Example icon-button with a menu">
@@ -34,5 +42,8 @@
   <button mat-menu-item *ngFor="let opn of menuOptions"><span>Disable alerts</span></button>> -->
   <!-- (click)="addTextTo(opn)" -->
   <!-- </mat-menu> -->
-
+  <button (click)="getOnRouter();" id="addButton" mat-mini-fab color="primary"
+    aria-label="Example icon button with a menu icon">
+    <mat-icon>add</mat-icon>
+  </button>
 </div>

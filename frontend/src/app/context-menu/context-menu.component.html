@@ -1,0 +1,10 @@
+<div class="contextMenu" [ngStyle]="{'left.px': x, 'top.px': y}">
+  <div *ngFor="let option of menuOptions; let i = index">
+    <div class="menuOption" (click) = menuMethods[i]() >
+      <p>
+        {{menuOptions[i]}}
+      </p>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+</div>

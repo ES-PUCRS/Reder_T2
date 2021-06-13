@@ -32,7 +32,7 @@ class HomeContext extends Context {
 			def params = super.mapParams exchangeRequestURI
 			def path = exchange.requestURI.path
 
-
+			// Log filter
 			if(!path.contains("console") && !path.contains("favicon"))
 				println "${ANSI.GREEN}[CLI] GET $path ${ANSI.RESET}-> Params: $params"
 

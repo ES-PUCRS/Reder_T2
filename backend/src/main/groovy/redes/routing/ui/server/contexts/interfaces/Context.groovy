@@ -122,7 +122,7 @@ abstract class Context implements HttpHandler {
 		if(respond instanceof File && respond.exists())
 			return TYPE[respond.name.split(/\./)[-1] as String]
 
-		TYPE["html"]
+		TYPE["json"]
 	}
 
 

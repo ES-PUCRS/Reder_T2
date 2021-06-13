@@ -12,14 +12,19 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-
+import { RouterComponent } from './home/router/router.component';
+import {ContextMenuComponent} from './context-menu/context-menu.component'
+import { MatDividerModule } from '@angular/material/divider';
 @NgModule({
   declarations: [
     HomeComponent,
-    AppComponent
+    AppComponent,
+    RouterComponent,
+    ContextMenuComponent
   ],
   imports: [
     MatButtonModule,
+    MatDividerModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatNativeDateModule,

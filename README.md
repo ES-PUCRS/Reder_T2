@@ -1,4 +1,4 @@
-# Redes/L TF
+# Redes/Lab TF
 .
 
 ## Environment
@@ -6,6 +6,12 @@
 ![NPM Version](https://img.shields.io/badge/npm-6.14.11-blueviolet)
 ![Angular CLI Version](https://img.shields.io/badge/Angular%20CLI-12.0.2-brightgreen)
 ![Gradle Version](https://img.shields.io/badge/Gradle-6.6.1-informational)
+
+## Arquitetura
+
+### Backend
+![Diagram](https://user-images.githubusercontent.com/44215827/121715167-f21f6580-cab4-11eb-88e8-92ed63e3fafb.png)
+
 
 ## Definição do Trabalho Final
 

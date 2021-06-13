@@ -32,7 +32,7 @@ class Server
 		server.createContext("/API", new APIContext())
 
 		server.start()
-		println "Server Server started on port ${port}"
+		println "Server started on port ${port}"
 	}
 
 }

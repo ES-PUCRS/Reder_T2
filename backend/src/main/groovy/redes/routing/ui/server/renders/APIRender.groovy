@@ -3,41 +3,22 @@ package redes.routing.ui.server.renders
 import groovy.text.SimpleTemplateEngine
 
 import redes.routing.ui.server.renders.interfaces.Render
-
-import redes.routing.core.RouterConnection
 import redes.routing.core.Firmware
 import redes.routing.Router
 
 import library.JSON
 
-class HomeRender extends Render {
+class APIRender extends Render {
 	
 	private static final Properties properties = super.importProperties()
-	private static final root = new File(properties."ui.views.path")
+
 
 	/*
 	 *	Shell is the JQuery Script, which not
-	 *	accepts render patterns.
 	 */
-	def static index(def map) {	null }
-
-	def static test(def map) {
-		super.build(['variable': JSON.parse(RouterConnection.requestModule(1020))])
+	def static health(def map) {
+		super.build(['variable': JSON.parse("status", "up")])
 	}
-
-
-	/*
-	 *	Build 'console' HTML view
-	 */
-	// def static console(def map) {
-	// 	Properties properties = importProperties()
-	// 	def root = new File(properties."ui.views.path")
-	// 	def templateJson = new File(root, "console.html")
-		
-	// 	new SimpleTemplateEngine()
-	// 		.createTemplate(templateJson)
-	// 		.make()
-	// }
 
 
 	/*
@@ -53,35 +34,37 @@ class HomeRender extends Render {
 		try {
 			if(map.get("object")[0] == "module")
 				response += JSON.parse(
-								"content",
+								"port",
 								Firmware.getInstance()
 										.installModule(port) as String
 							)
 			else
 				response = JSON.parse("error", "Install object was not defined")
-		} catch (e) { e.printStackTrace() 
+		} catch (e) { if(new Boolean(properties."api.debug")) println e.getLocalizedMessage() 
 			response = JSON.parse("error", e.getLocalizedMessage()) }
 
 		def binding = [
 			'variable' : JSON.verify(response)
 		]
 
-		super.build(binding)
+		build(binding)
 	}
 
 
 	/*
 	 *	Call list firmware objects
 	 */
-	//	TODO -	FORMATAR O JSON
 	def static list(def map) {
 		def response = ""
 		
 		try {
-			if(map.get("object")[0] == "modules") {
-				response += Firmware
-								.getInstance()
-								.listModules()
+			if(map.get("object")[0] == "modules"){
+				response += JSON.parse(
+								"",
+								Firmware
+									.getInstance()
+									.listModules()
+								)
 									
 				if(response == "[:]")
 					response = "\\tThere is no installed module."
@@ -94,13 +77,13 @@ class HomeRender extends Render {
 										?.replaceAll("\\\""	 , "\\\\\"")
 			}
 
-			else if(map.get("object")[0] == "routes") {
+			else if(map.get("object")[0] == "routes"){
 				response += Firmware
 								.getInstance()
 								.listRoutingTable() as String
 
-				if(response == "[:]") {
-					response = JSON.parse("modules", "[]")
+				if(response == "[:]"){
+					response = "\\tThe ip table is empty."
 				} else {
 					response = response
 										?.substring(1)
@@ -120,34 +103,21 @@ class HomeRender extends Render {
 
 		super.build(binding)
 	}
-	
+
 
 	/*
 	 *	Send message or file to antoher router
 	 */
 	def static send(def map) {
-		def response = ""
-
-		try {
-			if(map.get("object")?[0] == "message")
-				response += 
-						JSON.parse("error",
-							Firmware
-								.getInstance()
-								.send(
-									Integer.parseInt(map.get("destination") [0]),
-									map.get("content")[0]
-								) as String
-						)
-			else
-				response = JSON.parse("error", "Action not defined")
-		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
 		
-		if(response == "{ \"error\": \"null\" }")
-			response = "{}"
+	}
 
-		def binding = ['variable': JSON.verify(response)]
-		super.build(binding)
+
+ 	/*
+	 *	Module Start
+	 */
+	def static start(def map) {
+
 	}
 
 
@@ -158,8 +128,8 @@ class HomeRender extends Render {
 		def response = ""
 
 		try {
-			if(map.get("object")?[0] == "module"){
-				response += 
+			if(map.get("object")?[0] == "module") {
+				response +=
 						JSON.parse("error",
 							Firmware
 								.getInstance()
@@ -181,51 +151,17 @@ class HomeRender extends Render {
 				JSON.parse("error", "Object was not defined")
 		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
 		
-		if(response == "{ \"error\": \"null\" }")
-			response = "{}"
 
 		def binding = ['variable': JSON.verify(response)]
 		super.build(binding)
 	}
 
 
-	// Null responses ------------------------------------------------------
-
-
-
-	/*
-	 *	Module Start
-	 */
-	def static start(def map) {
-		try {
-			if(map.get("object")[0] == "module")
-				Firmware
-					.getInstance()
-					.startModule(
-						Integer.parseInt(map.get("target")[0])
-					)
-		} catch (e) { }
-
-		def binding = ['variable':'{}']
-		super.build(binding)
-	}
-
-	
 	/*
 	 *	Module killer objects
 	 */
 	def static kill(def map) {
-		try {
-			if(map.get("object")[0] == "module")
-				Firmware
-					.getInstance()
-					.killModule(
-						Integer.parseInt(map.get("target")[0])
-					)
-		} catch (e) { }
 
-		def binding = ['variable':'{}']
-		super.build(binding)
 	}
 
 
@@ -233,25 +169,7 @@ class HomeRender extends Render {
 	 *	Kill and remove object from firmware
 	 */
 	def static remove(def map) {
-		try {
-			if(map.get("object")[0] == "module")
-				Firmware
-					.getInstance()
-					.removeModule(
-						Integer.parseInt(map.get("target")[0])
-					)
-		} catch (e) { }
-
-		def binding = ['variable':'{}']
-		super.build(binding)
-	}
-
-
-	/*
-	 *	Confirm that the router is running
-	 */
-	def static health(def map) {
-		super.build(['variable': JSON.parse("content", "check")])
+		
 	}
 
 }

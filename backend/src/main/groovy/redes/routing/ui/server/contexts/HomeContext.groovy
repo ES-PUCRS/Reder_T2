@@ -36,11 +36,11 @@ class HomeContext extends Context {
 			if(!path.contains("console") && !path.contains("favicon"))
 				println "${ANSI.GREEN}[CLI] GET $path ${ANSI.RESET}-> Params: $params"
 
-			
+
 			try {
 				try { respond = "${path?.substring(1)?.replaceAll(".*\\.","")?:"index"}"(path, params) }
-				catch(ignored){ respond = HomeRender."${path?.substring(1)?.replaceAll("\\..*","")}"(params) }
-			} catch (ignore) { }
+				catch(ignored) { respond = HomeRender."${path?.substring(1)?.replaceAll("\\..*","")}"(params) }
+			} catch (ignore) { if(new Boolean(properties."cli.debug")) println ignore.getLocalizedMessage() }
 			
 
 			super.reply(exchange, respond)

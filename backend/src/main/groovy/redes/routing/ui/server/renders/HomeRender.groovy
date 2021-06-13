@@ -1,6 +1,8 @@
 package redes.routing.ui.server.renders
 
-import groovy.text.SimpleTemplateEngine 
+import groovy.text.SimpleTemplateEngine
+
+import redes.routing.ui.server.renders.interfaces.Render
 
 import redes.routing.core.RouterConnection
 import redes.routing.core.Firmware
@@ -8,11 +10,10 @@ import redes.routing.Router
 
 import library.JSON
 
-class HomeRender {
+class HomeRender extends Render {
 	
-	private static final Properties properties = importProperties()
+	private static final Properties properties = super.importProperties()
 	private static final root = new File(properties."ui.views.path")
-	private static final templateJson = new File(root, "template.json")
 
 	/*
 	 *	Shell is the JQuery Script, which not
@@ -258,26 +259,26 @@ class HomeRender {
 	/*
 	 *	Build the response to send to the context to be responded
 	 */
-	private static Writable build(def binding, def file = templateJson) {
-		new SimpleTemplateEngine()
-			.createTemplate(file)
-			.make(binding)
-	}
+	// private static Writable build(def binding, def file = templateJson) {
+	// 	new SimpleTemplateEngine()
+	// 		.createTemplate(file)
+	// 		.make(binding)
+	// }
 
 	/*
 	 * 	Private method due to import project properties
 	 *
 	 *	return properties object
 	 */
-	def static importProperties(){
-		Properties properties = new Properties();
-		new Object() {}
-	    	.getClass()
-	    	.getResource( Router.propertiesPath )
-	    	.withInputStream {
-	        	properties.load(it)
-	    	}
-	    properties
-	}
+	// def static importProperties(){
+	// 	Properties properties = new Properties();
+	// 	new Object() {}
+	//     	.getClass()
+	//     	.getResource( Router.propertiesPath )
+	//     	.withInputStream {
+	//         	properties.load(it)
+	//     	}
+	//     properties
+	// }
 
 }

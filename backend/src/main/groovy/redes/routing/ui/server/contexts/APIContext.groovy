@@ -10,7 +10,7 @@ class APIContext extends Context {
 	
 	private static Properties properties
 
-	APIContext(){
+	APIContext() {
 		properties = super.importProperties()
 	}
 
@@ -29,16 +29,15 @@ class APIContext extends Context {
 				(super.findHeaderParamKey(exchange, "Origin")			   ||
 				(super.findHeaderParamValue(exchange, "WindowsPowerShell") || new Boolean(properties."api.debug"))) )
 				println "${ANSI.GREEN}[API] ${exchange.getRequestMethod()} ${path.replace("/API","")?:"/"} ${ANSI.RESET}-> Params: $params"
-			
-			println "${path?.substring(1)?.replaceAll("API/","")}"
-			
+
+
 			try { respond = APIRender."${path?.substring(1)?.replaceAll("API/","")}"(params) }
 			catch(ignored) {
 				ignored.printStackStrace()
 				if(new Boolean(properties."api.debug")) println ignored.getLocalizedMessage()
 			}
 			
-			println respond
+			// println respond
 
 			super.reply(exchange, respond)
 		} catch(e) {

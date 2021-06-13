@@ -13,10 +13,9 @@ class RouterConnection {
 
 	static def requestModule(int request) {
 		try {
-			HttpURLConnection conn = setConnection(request, 'health')
+			HttpURLConnection conn = setConnection(request, 'connect')
 			conn.setRequestMethod("GET")
 
-			println conn.getResponseMessage()
 			if(conn.getResponseMessage() == 'OK') {
 				def reader = new BufferedReader(new InputStreamReader((conn.getInputStream())))
 				def builder = new StringBuilder()
@@ -25,16 +24,14 @@ class RouterConnection {
 				while ((output = reader.readLine()) != null) {
 					builder.append(output)
 				}
-				def str = builder.toString()
-				println str
-				def map = Protocol.packetHeader(str)
-				println map
+
+				Protocol.packetHeader(builder.toString())
 			}
 		} catch(Exception e) { e.printStackTrace() }
 	}
 
 	static def setConnection(int target, String uri, def params = null) {
-		URL url = new URL("http://localhost:${target}/API/${uri}")
+		URL url = new URL("http://localhost:${target}/API/${uri}${defParams(params)}")
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection()
 		conn
 	}

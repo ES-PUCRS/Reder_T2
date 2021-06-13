@@ -54,10 +54,13 @@ class Protocol {
      *   return a map with all parameters given on the header
      */
    	public static Map<String, String> packetHeader(DatagramPacket packet) {
+   		packetHeader(new String(packet.getData()))
+   	}
+   	public static Map<String, String> packetHeader(String sentence) {
      	Map<String, String> map = new HashMap<String, String>()
-     	String sentenceMap, sentence;
+     	String sentenceMap
      	try{
-     	  	sentenceMap = sentence = new String(packet.getData())
+     	  	sentenceMap = sentence
 
      	  	Matcher arrays
      	  	   	= Pattern
@@ -87,7 +90,7 @@ class Protocol {
      	  						array -> array[0].replaceAll("\"",""),
      	  						array -> array[1].replaceAll("\"","")
      	  					)
-     	  				);
+     	  				)
 
      	  		if(map.size() > 0) {
      	  			for (Map.Entry<String, String> entry : res.entrySet()) {

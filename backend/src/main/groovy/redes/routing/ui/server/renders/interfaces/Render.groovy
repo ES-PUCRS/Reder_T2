@@ -5,16 +5,16 @@ import groovy.text.SimpleTemplateEngine
 import redes.routing.Router
 
 abstract class Render {
-		
+
 	private static final Properties properties = importProperties()
-	private static templateJson = new File(root, "template.json")
-	private static root = new File(properties."ui.views.path")
+	private static final root = new File(properties."ui.views.path")
+	private static final templateJson = new File(root, "template.json")
+
 
 	/*
 	 *	Build the response to send to the context to be responded
 	 */
 	def static build(def binding, def file = templateJson) {
-		println "caled"
 		try{
 			new SimpleTemplateEngine()
 				.createTemplate(file)
@@ -28,7 +28,6 @@ abstract class Render {
 	 *	return properties object
 	 */
 	def static importProperties(){
-		println "render properties"
 		Properties properties = new Properties();
 		new Object() {}
 	    	.getClass()

@@ -10,92 +10,166 @@ import library.JSON
 
 class APIRender extends Render {
 	
-
 	private static final Properties properties = super.importProperties()
 
+
+	/*
+	 *	Shell is the JQuery Script, which not
+	 */
 	def static health(def map) {
 		super.build(['variable': JSON.parse("status", "up")])
 	}
 
 
 	/*
-	 *	Shell is the JQuery Script, which not
-	 *	accepts render patterns.
+	 *	Call Firmware installer
 	 */
-	def static connect(def map) {
-		super.build(['variable': JSON.parse("content", "check")])
+	def static install(def map) {
+		def response = ""
+		def port
+
+		if (map?.get("port"))
+			port = Integer.parseInt(map?.get("port")?[0])
+		
+		try {
+			if(map.get("object")[0] == "module")
+				response += JSON.parse(
+								"port",
+								Firmware.getInstance()
+										.installModule(port) as String
+							)
+			else
+				response = JSON.parse("error", "Install object was not defined")
+		} catch (e) { if(new Boolean(properties."api.debug")) println e.getLocalizedMessage() 
+			response = JSON.parse("error", e.getLocalizedMessage()) }
+
+		def binding = [
+			'variable' : JSON.verify(response)
+		]
+
+		build(binding)
 	}
 
 
 	/*
-	 *	Call Firmware installer
+	 *	Call list firmware objects
 	 */
-	// def static install(def map) {
-	// 	def response = ""
-	// 	def port
-
-	// 	if (map?.get("port"))
-	// 		port = Integer.parseInt(map?.get("port")?[0])
+	def static list(def map) {
+		def response = ""
 		
-	// 	try {
-	// 		if(map.get("object")[0] == "module")
-	// 			response += JSON.parse(
-	// 							"content",
-	// 							Firmware.getInstance()
-	// 									.installModule(port) as String
-	// 						)
-	// 		else
-	// 			response = JSON.parse("error", "Install object was not defined")
-	// 	} catch (e) { if(new Boolean(properties."api.debug")) println e.getLocalizedMessage() 
-	// 		response = JSON.parse("error", e.getLocalizedMessage()) }
+		try {
+			if(map.get("object")[0] == "modules"){
+				response += JSON.parse(
+								"",
+								Firmware
+									.getInstance()
+									.listModules()
+								)
+									
+				if(response == "[:]")
+					response = "\\tThere is no installed module."
+				else
+					response = response
+										?.replaceAll("\\[" 	 , "\\[\\\\n\\\\t ")
+										?.replaceAll("\\},"  , "\\}\\\\n\\\\t")
+										?.replaceAll(":"   	 , ": ")
+										?.replaceAll("\\]"	 , "\\\\n\\]")
+										?.replaceAll("\\\""	 , "\\\\\"")
+			}
 
-	// 	def binding = [
-	// 		'variable' : JSON.verify(response)
-	// 	]
+			else if(map.get("object")[0] == "routes"){
+				response += Firmware
+								.getInstance()
+								.listRoutingTable() as String
 
-	// 	build(binding)
-	// }
+				if(response == "[:]"){
+					response = "\\tThe ip table is empty."
+				} else {
+					response = response
+										?.substring(1)
+										?.substring(0, response.length() - 2)
+										?.replaceAll("\\],","\\]\\\\n\\\\t")
 
+					response = "[\\n\\t" + response + "\\n]"
+				}
+			}
 
-	// def static list(def map) 	{}
-	// def static wire(def map) 	{}
-	// def static start(def map) 	{}
-	// def static kill(def map) 	{}
-	// def static remove(def map) 	{}
-	
+			response = JSON.parse("content", response)
+		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
+		
+		def binding = [
+			'variable' : JSON.verify(response)
+		]
 
+		super.build(binding)
+	}
 
 
 	/*
-	 *	Build the response to send to the context to be responded
+	 *	Send message or file to antoher router
 	 */
-	// def static Writable build(def binding, def file = templateJson) {
-	// 	println "caled"
-	// 	try{
-	// 		new SimpleTemplateEngine()
-	// 			.createTemplate(file)
-	// 			.make(binding)
-	// 	} catch(Exception e) { e.printStackTrace() }
-	// }
+	def static send(def map) {
+		
+	}
+
+
+ 	/*
+	 *	Module Start
+	 */
+	def static start(def map) {
+
+	}
+
 
 	/*
-	 * 	Private method due to import project properties
-	 *
-	 *	return properties object
+	 *	Call wire firmware objects
 	 */
-	// def static importProperties(){
-	// 	Properties properties = new Properties();
-	// 	new Object() {}
-	//     	.getClass()
-	//     	.getResource( Router.propertiesPath )
-	//     	.withInputStream {
-	//         	properties.load(it)
-	//     	}
-	    
-	//     properties
-	// }
+	def static wire(def map) {
+		def response = ""
+
+		try {
+			if(map.get("object")?[0] == "module") {
+				response +=
+						JSON.parse("error",
+							Firmware
+								.getInstance()
+								.wireModule(
+									Integer.parseInt(map.get("index") [0]),
+									Integer.parseInt(map.get("target")[0])
+								) as String
+						)
+			} else if (map.get("object")?[0] == "cut") {
+				response += 
+						JSON.parse("error",
+							Firmware
+								.getInstance()
+								.unwireModule(
+									Integer.parseInt(map.get("index")[0])
+								) as String
+						)
+			} else
+				JSON.parse("error", "Object was not defined")
+		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
+		
+
+		def binding = ['variable': JSON.verify(response)]
+		super.build(binding)
+	}
 
 
+	/*
+	 *	Module killer objects
+	 */
+	def static kill(def map) {
 
+	}
+
+
+	/*
+	 *	Kill and remove object from firmware
+	 */
+	def static remove(def map) {
+		
+	}
 
 }

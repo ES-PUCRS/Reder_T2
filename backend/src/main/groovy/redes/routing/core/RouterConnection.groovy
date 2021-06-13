@@ -14,7 +14,6 @@ class RouterConnection {
 	static def requestModule(int request) {
 		try {
 			HttpURLConnection conn = setConnection(request, 'connect')
-			conn.setRequestMethod("GET")
 
 			if(conn.getResponseMessage() == 'OK') {
 				def reader = new BufferedReader(new InputStreamReader((conn.getInputStream())))
@@ -30,18 +29,27 @@ class RouterConnection {
 		} catch(Exception e) { e.printStackTrace() }
 	}
 
-	static def setConnection(int target, String uri, def params = null) {
+
+
+	/**/
+	static def setConnection(int target, String uri, Map params = null, String method = "GET") {
 		URL url = new URL("http://localhost:${target}/API/${uri}${defParams(params)}")
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection()
+		conn.setRequestMethod(method)	
 		conn
 	}
 
-	static def defParams(def params){
-		if(!params){
-			return ""
-		} else {
-			return "?"
-		}
+	static def defParams(Map map){
+		def params = ""
+		if(map)
+			map.each { key, value ->
+	    		res += "&\"${key}\"=\"${value}\""
+			}
+
+		if(params)
+			params = "?${params.substring(1)}"
+
+		params
 	}
 
 }

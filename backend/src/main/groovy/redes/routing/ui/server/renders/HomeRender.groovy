@@ -22,8 +22,7 @@ class HomeRender extends Render {
 	def static index(def map) {	null }
 
 	def static test(def map) {
-		RouterConnection.requestModule(1020)
-		build(['variable': JSON.parse("transation", "ok")])
+		super.build(['variable': JSON.parse(RouterConnection.requestModule(1020))])
 	}
 
 
@@ -67,18 +66,19 @@ class HomeRender extends Render {
 			'variable' : JSON.verify(response)
 		]
 
-		build(binding)
+		super.build(binding)
 	}
 
 
 	/*
 	 *	Call list firmware objects
 	 */
+	//	TODO -	FORMATAR O JSON
 	def static list(def map) {
 		def response = ""
 		
 		try {
-			if(map.get("object")[0] == "modules"){
+			if(map.get("object")[0] == "modules") {
 				response += Firmware
 								.getInstance()
 								.listModules()
@@ -94,13 +94,13 @@ class HomeRender extends Render {
 										?.replaceAll("\\\""	 , "\\\\\"")
 			}
 
-			else if(map.get("object")[0] == "routes"){
+			else if(map.get("object")[0] == "routes") {
 				response += Firmware
 								.getInstance()
 								.listRoutingTable() as String
 
-				if(response == "[:]"){
-					response = "\\tThe ip table is empty."
+				if(response == "[:]") {
+					response = JSON.parse("modules", "[]")
 				} else {
 					response = response
 										?.substring(1)
@@ -118,12 +118,12 @@ class HomeRender extends Render {
 			'variable' : JSON.verify(response)
 		]
 
-		build(binding)
+		super.build(binding)
 	}
 	
 
 	/*
-	 *	Call list firmware objects
+	 *	Send message or file to antoher router
 	 */
 	def static send(def map) {
 		def response = ""
@@ -147,7 +147,7 @@ class HomeRender extends Render {
 			response = "{}"
 
 		def binding = ['variable': JSON.verify(response)]
-		build(binding)
+		super.build(binding)
 	}
 
 
@@ -185,7 +185,7 @@ class HomeRender extends Render {
 			response = "{}"
 
 		def binding = ['variable': JSON.verify(response)]
-		build(binding)
+		super.build(binding)
 	}
 
 
@@ -194,7 +194,7 @@ class HomeRender extends Render {
 
 
 	/*
-	 *	Module killer objects
+	 *	Module Start
 	 */
 	def static start(def map) {
 		try {
@@ -207,7 +207,7 @@ class HomeRender extends Render {
 		} catch (e) { }
 
 		def binding = ['variable':'{}']
-		build(binding)
+		super.build(binding)
 	}
 
 	
@@ -225,7 +225,7 @@ class HomeRender extends Render {
 		} catch (e) { }
 
 		def binding = ['variable':'{}']
-		build(binding)
+		super.build(binding)
 	}
 
 
@@ -243,7 +243,7 @@ class HomeRender extends Render {
 		} catch (e) { }
 
 		def binding = ['variable':'{}']
-		build(binding)
+		super.build(binding)
 	}
 
 
@@ -251,34 +251,7 @@ class HomeRender extends Render {
 	 *	Confirm that the router is running
 	 */
 	def static health(def map) {
-		build(['variable': JSON.parse("content", "check")])
+		super.build(['variable': JSON.parse("content", "check")])
 	}
-
-
-
-	/*
-	 *	Build the response to send to the context to be responded
-	 */
-	// private static Writable build(def binding, def file = templateJson) {
-	// 	new SimpleTemplateEngine()
-	// 		.createTemplate(file)
-	// 		.make(binding)
-	// }
-
-	/*
-	 * 	Private method due to import project properties
-	 *
-	 *	return properties object
-	 */
-	// def static importProperties(){
-	// 	Properties properties = new Properties();
-	// 	new Object() {}
-	//     	.getClass()
-	//     	.getResource( Router.propertiesPath )
-	//     	.withInputStream {
-	//         	properties.load(it)
-	//     	}
-	//     properties
-	// }
 
 }

@@ -8,7 +8,7 @@ export class BackendService {
 
   constructor(private http:HttpClient) { }
 
-  public agentEndpoint: string = "http://localhost:8080";
+  public agentEndpoint: string = "http://localhost:4201";
   public BackendEndpoint: string = "http://localhost:1010/API";
 
   public restGet() {

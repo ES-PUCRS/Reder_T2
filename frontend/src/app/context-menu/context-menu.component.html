@@ -11,7 +11,7 @@
         <div *ngFor="let subOption of menuSubOptions[i]; let subI = index" class="dropdown"
           [style.top.px]="(subI + i) * 29" [style.display]="menuDropdownOpen[i] ? 'block':'none'"
           (mouseover)="menuDropdownOpen[i] = true" (mouseout)="menuDropdownOpen[i] = false"
-          (click) = "$event.stopPropagation()"
+          (click) = "testChild();$event.stopPropagation()"
           >
           <div class="dropdownOption">
             <p>{{subOption}}</p>

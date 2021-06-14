@@ -52,4 +52,8 @@ export class ContextMenuComponent implements OnInit {
 
     alert(test);
   }
+
+  testChild() {
+    alert("I am a child!");
+  }
 }

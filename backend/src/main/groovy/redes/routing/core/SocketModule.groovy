@@ -15,9 +15,8 @@ import library.Protocol
 import library.HTTP
 import library.JSON
 
-// @ThreadInterrupt
 class SocketModule {
-	
+
 	private DatagramSocket 	socket
 	private Firmware	 	firmware
 	private boolean	 		enabled
@@ -84,7 +83,7 @@ class SocketModule {
 		try { 
 			socket.send(
 				createPacket(
-					JSON.parse(['action':'message', 'content':message]),
+					JSON.parse(['action':'message', 'content':message, 'src':port]),
 					wired
 				)
 			)
@@ -101,10 +100,11 @@ class SocketModule {
 	}
 
 	def wire(int wire, DatagramPacket packet = null) throws IllegalAccessError {
-		def header = JSON.parse(['action':'wire', 'src':this.port, 'dst':wire])
+		def header = JSON.parse(['action':'wire', 'src':this.port, 'dst':wire, 'origin':Firmware.port])
 		if(wired) {
 			if(wired == wire){
-				def httpCode = Protocol.packetStatus(packet)
+				def headerMap = Protocol.packetHeader(packet)
+				def httpCode  = Protocol.packetStatus(packet)
 
 				if(httpCode == HTTP.NOT_ACCEPTABLE.toString()) {
 					wired = null
@@ -114,7 +114,7 @@ class SocketModule {
 				if(httpCode != HTTP.OK.toString())
 					reply("${header}${status(HTTP.OK)}", wire)
 
-				firmware.reroute(wire, 0, this.port)
+				firmware.reroute(headerMap.get("origin") as int, 0, this.port)
 				return
 			} else {
 				reply("${header}${status(HTTP.NOT_ACCEPTABLE)}", wire)
@@ -130,8 +130,13 @@ class SocketModule {
 	/* CONNECTION HANDLER -----------------------------*/
 
 	def message (int wire, DatagramPacket packet = null) {
-		def msg = Protocol.packetMessage(packet)
-		println "received on ${this.port}: ${msg}"
+		def msg = Protocol.packetHeader(packet)
+		println "received ${this.port} msg: ${msg.get("content")}"
+	}
+
+	def file (int wire, DatagramPacket packet = null) {
+		def msg = Protocol.packetHeader(packet)
+		println "received ${this.port} file: ${msg.get("content")}"
 	}
 
 	/* CONNECTION INTERFACE ---------------------------*/

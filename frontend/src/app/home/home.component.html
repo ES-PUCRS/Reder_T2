@@ -21,18 +21,17 @@
 
   </div>
   <!-- THis div below represents alls ROUTERS -->
-  <div class="box-boundary" (click)="disableContextMenu()" (contextmenu) = "$event.preventDefault();">
+  <div class="box-boundary" (click)="disableContextMenu()" (contextmenu)="$event.preventDefault();">
 
-    <div *ngFor='let router of routers' [style.width.px]="77" >
-      <app-router  router_port={{router.port}}
-        (contextmenu)="open($event, router); $event.preventDefault();" 
-        ></app-router>
+    <div *ngFor='let router of routers' [style.width.px]="77">
+      <app-router router_port={{router.port}} (contextmenu)="open($event, router); $event.preventDefault();">
+      </app-router>
     </div>
 
   </div>
   <!-- This div below represents the CONTEXT MENU, Appears when using the RIGHT BUTTON -->
   <div *ngIf="contextMenu">
-    <app-context-menu [x]="contextMenuX" [y]="contextMenuY"></app-context-menu>
+    <app-context-menu [x]="contextMenuX" [y]="contextMenuY" [router] = "router"></app-context-menu>
   </div>
 
   <!-- <button mat-icon-button  aria-label="Example icon-button with a menu">

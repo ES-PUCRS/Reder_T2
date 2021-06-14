@@ -49,7 +49,9 @@ export class HomeComponent implements OnInit {
     }
     console.log(this.routers);
   }
-
+  getElementWidth(af: any) {
+   console.log(af) 
+  }
 
   open(event: MouseEvent, router:any): void 
   {

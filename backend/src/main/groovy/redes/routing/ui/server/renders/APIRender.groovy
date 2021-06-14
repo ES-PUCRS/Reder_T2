@@ -56,9 +56,9 @@ class APIRender extends Render {
 	 */
 	def static list(def map) {
 		def response = ""
-		
+
 		try {
-			if(map.get("object")[0] == "modules"){
+			if(map.get("object")[0] == "modules") {
 				response += JSON.parse(
 								"",
 								Firmware
@@ -77,7 +77,7 @@ class APIRender extends Render {
 										?.replaceAll("\\\""	 , "\\\\\"")
 			}
 
-			else if(map.get("object")[0] == "routes"){
+			else if(map.get("object")[0] == "routes") {
 				response += Firmware
 								.getInstance()
 								.listRoutingTable() as String
@@ -109,7 +109,28 @@ class APIRender extends Render {
 	 *	Send message or file to antoher router
 	 */
 	def static send(def map) {
+		def response = ""
+
+		try {
+			if(map.get("object")?[0] == "message")
+				response += 
+						JSON.parse("error",
+							Firmware
+								.getInstance()
+								.send(
+									Integer.parseInt(map.get("destination") [0]),
+									map.get("content")[0]
+								) as String
+						)
+			else
+				response = JSON.parse("error", "Action not defined")
+		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
 		
+		if(response == "{ \"error\": \"null\" }")
+			response = "{}"
+
+		def binding = ['variable': JSON.verify(response)]
+		super.build(binding)
 	}
 
 
@@ -117,7 +138,17 @@ class APIRender extends Render {
 	 *	Module Start
 	 */
 	def static start(def map) {
+		try {
+			if(map.get("object")[0] == "module")
+				Firmware
+					.getInstance()
+					.startModule(
+						Integer.parseInt(map.get("target")[0])
+					)
+		} catch (e) { }
 
+		def binding = ['variable':'{}']
+		super.build(binding)
 	}
 
 

@@ -1,9 +1,23 @@
 <div class="contextMenu" [ngStyle]="{'left.px': x, 'top.px': y}">
   <div *ngFor="let option of menuOptions; let i = index">
-    <div class="menuOption" (click) = menuMethods[i]() >
-      <p>
-        {{menuOptions[i]}}
-      </p>
+    <div class="menuOption" (click)=menuMethods[i]() (mouseover)="menuDropdownOpen[i] = true"
+      (mouseout)="menuDropdownOpen[i] = false">
+      <div class="menuText">
+        <p>
+          {{menuOptions[i]}}
+        </p>
+      </div>
+      <div *ngIf="menuSubOptions[i].length > 0">
+        <div *ngFor="let subOption of menuSubOptions[i]; let subI = index" class="dropdown"
+          [style.top.px]="(subI + i) * 29" [style.display]="menuDropdownOpen[i] ? 'block':'none'"
+          (mouseover)="menuDropdownOpen[i] = true" (mouseout)="menuDropdownOpen[i] = false">
+          <div class="dropdownOption">
+            <p>{{subOption}}</p>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+
+      </div>
     </div>
     <mat-divider></mat-divider>
   </div>

@@ -1,6 +1,4 @@
-import { fn } from '@angular/compiler/src/output/output_ast';
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-context-menu',
@@ -9,7 +7,9 @@ import { Router } from '@angular/router';
 })
 export class ContextMenuComponent implements OnInit {
   menuOptions: Array<String> = ["Connect Router", "Delete Router", "Configure Module", "New Module"];
+  menuSubOptions: Array<String[]> = [["A", "B", "C"], [], ["A", "B", "C"], []];
   menuMethods: Array<any>;
+  menuDropdownOpen: Array<boolean> = [false, false, false, false];
 
   @Input() x = 0;
   @Input() y = 0;

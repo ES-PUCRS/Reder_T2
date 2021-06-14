@@ -3,16 +3,21 @@
     width: 150px;
     text-indent: 13px;
 }
-
 .menuOption{
     background-color: rgb(255,255,255);
     color: black;
+}
+.menuText,.dropdownOption{
     transition: 1s ease;
     padding:5px;
 }
-.menuOption:hover{
+.menuText:hover,.dropdownOption:hover{
     background-color: rgb(220, 220, 220);
 }
-.divider{
-    height:1px;
+.dropdown{
+    position: absolute;
+    left:150px;
+}
+.dropdownOption{
+    padding: 5px;
 }

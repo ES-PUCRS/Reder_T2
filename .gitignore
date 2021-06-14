@@ -61,7 +61,7 @@ backend/*.ear
 backend/*.db
 
 ######################
-# Windows			 #
+# Windows             #
 ######################
  
 # Windows image file caches
@@ -71,7 +71,7 @@ backend/Thumbs.db
 backend/Desktop.ini
  
 ######################
-# OSX				 #
+# OSX                 #
 ######################
  
 backend/.DS_Store
@@ -118,6 +118,7 @@ backend/.buildpath
 # Angular ----------------------------------------------------------
 
 # compiled output
+frontend/frontend/*
 frontend/dist
 frontend/tmp
 frontend/out-tsc

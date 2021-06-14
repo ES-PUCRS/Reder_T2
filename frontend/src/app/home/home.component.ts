@@ -11,23 +11,22 @@ import { BackendService } from '../services/backend.service';
 export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService) {
   }
-  
+
   @ViewChild('trigger', { static: true })
   trigger: MatMenuTrigger | undefined;
   contextMenu: boolean = false;
   contextMenuY: number = -1;
   contextMenuX: number = -1;
-  
+  router: any;
 
-  
   selectedOption: string = "no Option selected";
   routerCount: number = 0;
-  routers: Array<{name: string, port: string}> = [];
+  routers: Array<{ name: string, port: string }> = [];
 
-  onTextSelection(event: any):void{
+  onTextSelection(event: any): void {
 
     let menu = document.getElementById('matMenu');
-    if(menu !== null){
+    if (menu !== null) {
       menu.style.display = '';
       menu.style.position = 'absolute';
       menu.style.left = event.pageX + 5 + 'px';
@@ -40,47 +39,50 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.routerCount = window.localStorage.length;
     let objectKeys = Object.keys(window.localStorage);
-    for(let i = 0; i < window.localStorage.length; i++){
+    for (let i = 0; i < window.localStorage.length; i++) {
       let aux: any = window.localStorage.getItem(objectKeys[i])
       this.routers.push({
         "name": objectKeys[i],
         "port": aux
-    });
+      });
     }
     console.log(this.routers);
   }
-
-
-  open(event: MouseEvent): void 
-  {
-    this.contextMenuX=event.clientX
-    this.contextMenuY=event.clientY
-    this.contextMenu=true;
+  getElementWidth(af: any) {
+    console.log(af)
   }
-  disableContextMenu():void {
-      this.contextMenu=false;
+
+  open(event: MouseEvent, router: any): void {
+    this.contextMenuX = event.clientX
+    this.contextMenuY = event.clientY
+    this.router = router;
+    this.contextMenu = true;
+  }
+
+  disableContextMenu(): void {
+    this.contextMenu = false;
   }
 
   addTextTo(selectedOpn: any): void {
     this.selectedOption = selectedOpn + ' selected';
   }
 
-  getOnRouter(){
+  getOnRouter() {
     let res: any;
-    this.backendService.restGet().subscribe( data => {
+    this.backendService.restGet().subscribe(data => {
       console.log(data);
     })
   }
 
-  sendPost(){
+  sendPost() {
     let res: any;
-    this.backendService.restPost().subscribe( data => {
+    this.backendService.restPost().subscribe(data => {
       console.log(data);
       let port: string = data.toString()
-      window.localStorage.setItem("Router " +(1+this.routerCount), port);
+      window.localStorage.setItem("Router " + (1 + this.routerCount), port);
       console.log(window.localStorage.length);
       this.routers.push({
-        "name": "Router " +(1+this.routerCount),
+        "name": "Router " + (1 + this.routerCount),
         "port": port
       });
       console.log(this.routers);

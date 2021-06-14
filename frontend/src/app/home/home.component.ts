@@ -51,11 +51,12 @@ export class HomeComponent implements OnInit {
   }
 
 
-  open(event: MouseEvent): void 
+  open(event: MouseEvent, router:any): void 
   {
     this.contextMenuX=event.clientX
     this.contextMenuY=event.clientY
-    this.contextMenu=true;
+    this.contextMenu = true;
+    console.log(router)
   }
   disableContextMenu():void {
       this.contextMenu=false;

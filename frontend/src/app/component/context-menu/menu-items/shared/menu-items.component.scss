@@ -1,0 +1,24 @@
+.contextMenu{
+    position: absolute;
+    width: 150px;
+    text-indent: 13px;
+}
+.menuOption{
+    background-color: rgb(255,255,255);
+    color: black;
+}
+.menuText,.dropdownOption{
+    transition: 1s ease;
+    padding:5px;
+}
+.menuText:hover,.dropdownOption:hover{
+    background-color: rgb(220, 220, 220);
+}
+.dropdown{
+    position: absolute;
+    left:150px;
+    background-color: white;
+}
+.dropdownOption{
+    padding: 5px;
+}

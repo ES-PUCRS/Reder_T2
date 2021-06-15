@@ -6,10 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./context-menu.component.scss']
 })
 export class ContextMenuComponent implements OnInit {
-  menuOptions: Array<String> = ["Connect Router", "Delete Router", "Configure Module", "New Module"];
-  menuSubOptions: Array<String[]> = [["A", "B", "C"], [], ["A", "B", "C"], []];
-  menuMethods: Array<any>;
-  menuDropdownOpen: Array<boolean> = [false, false, false, false];
+  menuOptions: Array<string> = ["configure_module","connect_router","create_module","delete_router"];
 
   @Input() x = 0;
   @Input() y = 0;
@@ -17,43 +14,9 @@ export class ContextMenuComponent implements OnInit {
 
   constructor() {
 
-    this.menuMethods = [
-      () => { this.connectRouter(this.x) },
-      () => { this.deleteRouter(this.y) },
-      () => { this.configureModule(this.router) },
-      () => { this.newModule(this.router) }
-    ];
-
   }
 
   ngOnInit(): void {
   }
 
-  connectRouter = function (test: any): void {
-    alert("Connect Router");
-
-    alert(test);
-  }
-
-  deleteRouter(test: any) {
-    alert("Delete Router");
-
-    alert(test);
-  }
-
-  configureModule(test: any) {
-    alert("Configure Module");
-
-    alert(test);
-  }
-
-  newModule(test: any) {
-    alert("New Module");
-
-    alert(test);
-  }
-
-  testChild() {
-    alert("I am a child!");
-  }
 }

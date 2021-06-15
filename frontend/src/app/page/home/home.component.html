@@ -24,7 +24,7 @@
   <div class="box-boundary" (click)="disableContextMenu()" (contextmenu)="$event.preventDefault();">
 
     <div *ngFor='let router of routers' [style.width.px]="77">
-      <app-router router_port={{router.port}} (contextmenu)="open($event, router); $event.preventDefault();">
+      <app-router [router]=router (contextmenu)="open($event, router); $event.preventDefault();">
       </app-router>
     </div>
 

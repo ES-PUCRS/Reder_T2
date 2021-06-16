@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MenuItem } from 'src/app/interface/menu-item';
 import { MenuItemsComponent } from '../shared/menu-items.component';
 
@@ -8,7 +8,8 @@ import { MenuItemsComponent } from '../shared/menu-items.component';
   styleUrls: ['../shared/menu-items.component.scss']
 })
 export class ConfigureModuleComponent extends MenuItemsComponent implements OnInit {
-
+  
+  
   constructor() {
     super();
     const menuItem = new MenuItem();

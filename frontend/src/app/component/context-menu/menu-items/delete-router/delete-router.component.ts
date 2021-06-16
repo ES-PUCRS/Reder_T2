@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MenuItem } from 'src/app/interface/menu-item';
 import { MenuItemsComponent } from '../shared/menu-items.component';
 
@@ -9,6 +9,8 @@ import { MenuItemsComponent } from '../shared/menu-items.component';
 })
 export class DeleteRouterComponent extends MenuItemsComponent implements OnInit {
 
+  
+
   constructor() {
     super();
     const menuItem = new MenuItem();
@@ -17,6 +19,21 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
     menuItem.operation = this.operator;
     menuItem.dropdown = [];
     menuItem.dropdownOpen = false;
+    
+    const submenu1 = new MenuItem();
+    submenu1.name = "Test";
+    submenu1.operation = this.operator;
+    submenu1.dropdown = [];
+    submenu1.dropdownOpen = false;
+
+    const submenu2 = new MenuItem();
+    submenu2.name = "Test";
+    submenu2.operation = this.operator;
+    submenu2.dropdown = [];
+    submenu2.dropdownOpen = false;
+    
+    menuItem.dropdown = [submenu1,submenu2];
+    
     super.option = menuItem;
   }
 

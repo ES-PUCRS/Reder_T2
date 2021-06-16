@@ -1,5 +1,6 @@
 <div class="contextMenu" [ngStyle]="{'left.px': x, 'top.px': y}">
-  <div *ngFor="let option of menuOptions;">
-    <app-selector [component] = "option"></app-selector>
+  <div *ngFor="let option of menuOptions; let i = index">
+    <app-selector [component] = "option" [position] = i></app-selector>
+    <mat-divider></mat-divider>
   </div>
 </div>

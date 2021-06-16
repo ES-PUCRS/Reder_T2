@@ -8,10 +8,12 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SelectorComponent implements OnInit {
 
   @Input() component: string = "";
+  @Input() position: number = 0;
 
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.position);
   }
 
 }

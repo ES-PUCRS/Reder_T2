@@ -9,6 +9,7 @@ import { MenuItemsComponent } from '../shared/menu-items.component';
 })
 export class CreateModuleComponent extends MenuItemsComponent implements OnInit {
 
+  
   constructor() {
     super();
     const menuItem = new MenuItem();

@@ -16,7 +16,7 @@ import { RouterComponent } from './component/router/router.component';
 import { ContextMenuComponent } from './component/context-menu/context-menu.component'
 import { MatDividerModule } from '@angular/material/divider';
 import { MenuItemsComponent } from './component/context-menu/menu-items/shared/menu-items.component';
-import { SelectorComponent } from './component/context-menu/menu-items/selector/selector.component';
+import { SelectorComponent } from './component/context-menu/menu-items/selector.component';
 import { DeleteRouterComponent } from './component/context-menu/menu-items/delete-router/delete-router.component';
 import { ConfigureModuleComponent } from './component/context-menu/menu-items/configure-module/configure-module.component';
 import { CreateModuleComponent } from './component/context-menu/menu-items/create-module/create-module.component';

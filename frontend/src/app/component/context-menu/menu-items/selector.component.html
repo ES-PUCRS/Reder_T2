@@ -1,0 +1,8 @@
+<div>
+    <div [ngSwitch]="component">
+        <configure-module-option *ngSwitchCase="'configure_module'" [position]=position></configure-module-option>
+        <connect-router-option *ngSwitchCase="'connect_router'" [position]=position></connect-router-option>
+        <create-module-option *ngSwitchCase="'create_module'" [position]=position></create-module-option>
+        <delete-router-option *ngSwitchCase="'delete_router'" [position]=position></delete-router-option>
+    </div>
+</div>

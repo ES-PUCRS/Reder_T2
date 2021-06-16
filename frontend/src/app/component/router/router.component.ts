@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from 'src/app/interface/router';
 
 @Component({
   selector: 'app-router',
@@ -8,9 +9,10 @@ import { Component, Input, OnInit } from '@angular/core';
 export class RouterComponent implements OnInit {
 
   @Input()
-  router_port: string = "";
+  router: Router | undefined;
 
-  constructor() { }
+  constructor() {
+   }
 
   ngOnInit(): void {
   }

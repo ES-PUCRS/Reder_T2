@@ -21,6 +21,9 @@ import { DeleteRouterComponent } from './component/context-menu/menu-items/delet
 import { ConfigureModuleComponent } from './component/context-menu/menu-items/configure-module/configure-module.component';
 import { CreateModuleComponent } from './component/context-menu/menu-items/create-module/create-module.component';
 import { ConnectRouterComponent } from './component/context-menu/menu-items/connect-router/connect-router.component';
+import { ClickOutsideModule } from 'ng-click-outside';
+
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -35,6 +38,7 @@ import { ConnectRouterComponent } from './component/context-menu/menu-items/conn
     ConnectRouterComponent
   ],
   imports: [
+    ClickOutsideModule,
     MatButtonModule,
     MatDividerModule,
     BrowserAnimationsModule,

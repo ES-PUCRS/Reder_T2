@@ -12,18 +12,32 @@
     </div>
 
     <div class="routersList">
-      <div class="routerInList" *ngFor="let router of routers">
+      <div class="routerInList" *ngFor="let router of routers" (click)="selectRouter(router)">
         <label>
           {{router.name}}
         </label>
       </div>
+    </div>
+
+    <div class="detailsCard">
+      <div class="cardHeader">
+        <label>Details</label>
+      </div> 
+      <div class="cardContent">
+        <label class="detail" *ngIf="selectedRouter != undefined">
+          Name: {{selectedRouter ? selectedRouter.name: ""}}
+        </label>
+        <label class="detail" *ngIf="selectedRouter != undefined">
+          Wired Port: {{selectedRouter ? selectedRouter.port: ""}}
+        </label>
+      </div> 
     </div>
   </div>
 
   <!-- THis div below represents alls ROUTERS -->
   <div class="box-boundary" (click)="disableContextMenu()" (contextmenu)="$event.preventDefault();">
     <div *ngFor='let router of routers' [style.width.px]="77">
-      <app-router [router]=router (contextmenu)="open($event, router); $event.preventDefault();">
+      <app-router [router]=router (click)="selectRouter(router)"   (contextmenu)="open($event, router); $event.preventDefault();"> 
       </app-router>
     </div>
   </div>

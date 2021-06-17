@@ -20,20 +20,7 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
     menuItem.dropdown = [];
     menuItem.dropdownOpen = false;
     
-    const submenu1 = new MenuItem();
-    submenu1.name = "Test";
-    submenu1.operation = this.operator;
-    submenu1.dropdown = [];
-    submenu1.dropdownOpen = false;
 
-    const submenu2 = new MenuItem();
-    submenu2.name = "Test";
-    submenu2.operation = this.operator;
-    submenu2.dropdown = [];
-    submenu2.dropdownOpen = false;
-    
-    menuItem.dropdown = [submenu1,submenu2];
-    
     super.option = menuItem;
   }
 

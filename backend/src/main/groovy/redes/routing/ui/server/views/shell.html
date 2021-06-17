@@ -62,8 +62,8 @@
     				this.error("Error wiring routers 1010 & 1020 -> " + e.message)
 					return
     			}
-
-    			if(true){
+				//-------------------------------------------------------------------------------------------------------------------------
+    			if(false){
 	    			try {
 		    			res = await fetch(
 		    				'http://localhost:1020/API/install?object=module&port=1022'
@@ -112,16 +112,6 @@
 
     			return '\tdone'
 
-		    },
-
-
-		    ping: function(...args) {
-		    	this.echo('On development')
-		    },
-
-
-		    tracert: function(...args) {
-		    	this.echo('On development')
 		    },
 
 
@@ -394,22 +384,18 @@
 
 		    		+	"\n\n > cls"
 		    		+	"\n Clear the terminal;" 
-		    
-		    		+	"\n\n > ping"
-		    		+	"\n On development;"
-		    		
-		    		+	"\n\n > tracert"
-		    		+	"\n On development;"
-		    		
-		    		+	"\n\n > show <object> <target>"
+		    		    		
+		    		+	"\n\n > show ip route"
+		    		+	"\n > show module"
 		    		+	"\n Clear the terminal;"
 		    		
-		    		+	"\n\n > install <object>"
+		    		+	"\n\n > install <object> [--port number]"
+		    		+	"\n Install the new object and return the ID;"
+
+
+		    		+	"\n\n > wire <object> <local_port> on <remote_router_port>"
 		    		+	"\n Install the new object and return the ID;"
 		    		
-		    		+	"\n\n > list <object>"
-		    		+	"\n List all objects of the firmware;"
-
 		    		+	"\n\n > start <object> <target>"
 		    		+	"\n Call the inactive object to run again;"
 

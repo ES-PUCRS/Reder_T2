@@ -1,6 +1,7 @@
 package redes.routing.ui.server.renders
 
 import groovy.text.SimpleTemplateEngine
+import groovy.json.JsonSlurper
 
 import redes.routing.ui.server.renders.interfaces.Render
 import redes.routing.core.Firmware
@@ -10,15 +11,124 @@ import library.JSON
 
 class APIRender extends Render {
 	
-	private static final Properties properties = super.importProperties()
+	def static API(def map) {
+		super.build(['variable':
+			JSON.parse(
+				[
 
+					"ROOT API ENDPOINT": "/API",
+
+					"Health check":
+						JSON.parse(
+							[
+								"endpoint": "/health",
+								"expected": healthHandler(null)
+							]
+						),
+
+					"Install module":
+						JSON.parse(
+							[
+								"endpoint": "/install",
+								"params":
+									JSON.parse(
+										[
+											"object": "module",
+											"port": "Integer | Null"
+										]
+									),
+								"expected":
+									JSON.parse(
+										"port": "Generated port"
+									),
+								"whenever fails":
+									JSON.parse(
+										"error": "Exception message"
+									)
+							]
+						),
+
+
+					"List tables":
+						JSON.parse(
+							[
+								"endpoint": "/list",
+								"param":
+									JSON.parse(
+											"object": "modules | routes"
+									),
+								"expected":
+									JSON.parse(
+										"content": JSON.parse(["list": "[1, 2, 3]"])
+									),
+								"whenever fails":
+									JSON.parse(
+										"error": "Exception message"
+									)
+							]
+						),	
+
+
+					"Start module":
+						JSON.parse(
+							[
+								"endpoint": "/start",
+								"params":
+									JSON.parse(
+										[
+											"object": "module",
+											"target": "Integer"
+										]
+									),
+								"expected" : "ok"
+							]
+						),
+
+					"Kill module":
+						JSON.parse(
+							[
+								"endpoint": "/kill",
+								"params":
+									JSON.parse(
+										[
+											"object": "module",
+											"target": "Integer"
+										]
+									),
+								"expected" : "ok"
+							]
+						),
+
+					"Remove module":
+						JSON.parse(
+							[
+								"endpoint": "/remove",
+								"params":
+									JSON.parse(
+										[
+											"object": "module",
+											"target": "Integer"
+										]
+									),
+								"expected" : "ok"
+							]
+						)
+
+				]
+			)
+		])
+	}
 
 	/*
 	 *	Shell is the JQuery Script, which not
 	 */
 	def static health(def map) {
-		super.build(['variable': JSON.parse("status", "up")])
+		super.build(['variable': healthHandler(map)])
 	}
+	def static healthHandler(def map) {
+		JSON.parse("status", "up")
+	}
+
 
 
 	/*
@@ -40,17 +150,13 @@ class APIRender extends Render {
 							)
 			else
 				response = JSON.parse("error", "Install object was not defined")
-		} catch (e) { if(new Boolean(properties."api.debug")) println e.getLocalizedMessage() 
+		} catch (e) { if(new Boolean(Router.properties."api.debug")) println e.getLocalizedMessage() 
 			response = JSON.parse("error", e.getLocalizedMessage()) }
 
 		if(response == "{ \"error\": \"null\" }")
 			response = "{}"
-			
-		def binding = [
-			'variable' : JSON.verify(response)
-		]
 
-		build(binding)
+		super.build(['variable' : JSON.verify(response)])
 	}
 
 
@@ -62,49 +168,44 @@ class APIRender extends Render {
 
 		try {
 			if(map.get("object")[0] == "modules") {
-				response += JSON.parse(
-								"",
-								Firmware
+				response += Firmware
 									.getInstance()
-									.listModules()
-								)
-									
-				if(response == "[:]")
-					response = "\\tThere is no installed module."
-				else
+									.listModules() as String
+
+				if (response != "[:]")
 					response = response
-										?.replaceAll("\\[" 	 , "\\[\\\\n\\\\t ")
-										?.replaceAll("\\},"  , "\\}\\\\n\\\\t")
-										?.replaceAll(":"   	 , ": ")
-										?.replaceAll("\\]"	 , "\\\\n\\]")
-										?.replaceAll("\\\""	 , "\\\\\"")
+									.replaceAll("\\[", "\\[\"")
+									.replaceAll(":\\{", "\":{")
+									.replaceAll("\\}, ", "},\"")
+									.replaceAll("\"", "\"")
+									.replaceAll("\\[", "\\{")
+									.replaceAll("\\]", "\\}")
+	
 			}
 
 			else if(map.get("object")[0] == "routes") {
-				response += Firmware
-								.getInstance()
-								.listRoutingTable() as String
+				response = new JsonSlurper()
+								.parseText(
+									Firmware
+										.getInstance()
+										.listRoutingTable()
+								)
 
-				if(response == "[:]") {
-					response = "\\tThe ip table is empty."
-				} else {
-					response = response
-										?.substring(1)
-										?.substring(0, response.length() - 2)
-										?.replaceAll("\\],","\\]\\\\n\\\\t")
-
-					response = "[\\n\\t" + response + "\\n]"
-				}
+				// if (response != "[:]")
+					// response = response
+									// .replaceAll("\\[", "\\{")
+									// .replaceAll("\\]", "\\}")
+				// response = "{\"array\": [${response}]}"
 			}
 
-			response = JSON.parse("content", response)
-		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
-		
-		def binding = [
-			'variable' : JSON.verify(response)
-		]
+			else {
+				response = JSON.parse("error", "No object to list")
+			}
 
-		super.build(binding)
+			// response = JSON.parse("contentx", response)
+		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
+
+		super.build('variable' : JSON.verify(response))		
 	}
 
 
@@ -133,24 +234,6 @@ class APIRender extends Render {
 			response = "{}"
 
 		def binding = ['variable': JSON.verify(response)]
-		super.build(binding)
-	}
-
-
- 	/*
-	 *	Module Start
-	 */
-	def static start(def map) {
-		try {
-			if(map.get("object")[0] == "module")
-				Firmware
-					.getInstance()
-					.startModule(
-						Integer.parseInt(map.get("target")[0])
-					)
-		} catch (e) { }
-
-		def binding = ['variable':'{}']
 		super.build(binding)
 	}
 
@@ -189,7 +272,25 @@ class APIRender extends Render {
 		if(response == "{ \"error\": \"null\" }")
 			response = "{}"
 
-		def binding = ['variable': JSON.verify(response)]
+		super.build(['variable': JSON.verify(response)])
+	}
+
+
+
+ 	/*
+	 *	Module Start
+	 */
+	def static start(def map) {
+		try {
+			if(map.get("object")[0] == "module")
+				Firmware
+					.getInstance()
+					.startModule(
+						Integer.parseInt(map.get("target")[0])
+					)
+		} catch (e) { }
+
+		def binding = ['variable':'{}']
 		super.build(binding)
 	}
 
@@ -198,7 +299,17 @@ class APIRender extends Render {
 	 *	Module killer objects
 	 */
 	def static kill(def map) {
+		try {
+			if(map.get("object")[0] == "module")
+				Firmware
+					.getInstance()
+					.killModule(
+						Integer.parseInt(map.get("target")[0])
+					)
+		} catch (e) { }
 
+		def binding = ['variable':'{}']
+		super.build(binding)
 	}
 
 
@@ -206,7 +317,17 @@ class APIRender extends Render {
 	 *	Kill and remove object from firmware
 	 */
 	def static remove(def map) {
-		
+		try {
+			if(map.get("object")[0] == "module")
+				Firmware
+					.getInstance()
+					.removeModule(
+						Integer.parseInt(map.get("target")[0])
+					)
+		} catch (e) { }
+
+		def binding = ['variable':'{}']
+		super.build(binding)
 	}
 
 }

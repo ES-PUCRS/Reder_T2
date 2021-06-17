@@ -11,9 +11,6 @@ import library.JSON
 
 class HomeRender extends Render {
 	
-	private static final Properties properties = super.importProperties()
-	private static final root = new File(properties."ui.views.path")
-
 	/*
 	 *	Shell is the JQuery Script, which not
 	 *	accepts render patterns.

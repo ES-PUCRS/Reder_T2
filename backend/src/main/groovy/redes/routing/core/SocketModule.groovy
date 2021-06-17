@@ -23,6 +23,7 @@ class SocketModule {
 	private DatagramSocket 	socket
 	private Firmware	 	firmware
 	private boolean	 		enabled
+	private boolean	 		updated
 	private Thread 			watch
 
 	private Integer			wired
@@ -32,6 +33,7 @@ class SocketModule {
 	SocketModule (int port) throws SocketException {
 		this.socket = new DatagramSocket(port)
 		this.firmware = Firmware.getInstance()
+		this.updated = false
 		this.wired = null
 		this.port = port
 		
@@ -41,11 +43,14 @@ class SocketModule {
 
 
 	def getWire(){ wired }
+	def getAlive() { updated }
+	def resetAlive() { updated = false	}
 
 	/* CONTROL INTERFACE ------------------------------*/
 
 
 	def start() {
+		firmware.reroute(port, 0, -1)
 		watch = new Thread(watchdog)
 		watch.start()
 	}
@@ -56,16 +61,17 @@ class SocketModule {
 	}
 
 	def kill() {
+		firmware.reroute(port)
 		stop()
 		socket.close()
 	}
 
 	// Internally call
 	def unwire() {
-		if(this.wired){
+		if(this.wired) {
 			reply(JSON.parse(['action':'unwire', 'src':this.port, 'dst':this.wired]), this.wired)
+			firmware.reroute(wired, 16, this.wired, this.port)
 			this.wired = null
-			rerout(port)
 		}
 	}
 
@@ -75,6 +81,7 @@ class SocketModule {
 		if(httpCode != HTTP.OK.toString()) {
 			def header = JSON.parse(['action':'unwire', 'src':this.port, 'dst':wire])
 			if(wire == wired) {
+				firmware.reroute(wire, 16, this.wired, this.port)
 				wired = null
 				reply("${header}${status(HTTP.OK)}", wire)
 			} else {
@@ -112,29 +119,29 @@ class SocketModule {
 	def wire(int wire, DatagramPacket packet = null) throws IllegalAccessError {
 		def header = JSON.parse(['action':'wire', 'src':this.port, 'dst':wire, 'origin':this.port])
 		try{
-		if(wired) {
-			if(wired == wire) {
-				def headerMap = Protocol.packetHeader(packet)
-				def httpCode  = Protocol.packetStatus(packet)
+			if(wired) {
+				if(wired == wire) {
+					def headerMap = Protocol.packetHeader(packet)
+					def httpCode  = Protocol.packetStatus(packet)
 
-				if(httpCode == HTTP.NOT_ACCEPTABLE.toString()) {
-					wired = null
+					if(httpCode == HTTP.NOT_ACCEPTABLE.toString()) {
+						wired = null
+						return
+					} 
+
+					if(httpCode != HTTP.OK.toString())
+						reply("${header}${status(HTTP.OK)}", wire)
+
+					firmware.reroute(headerMap.get("origin") as int, 1, (headerMap.get("src") as int), this.port)
 					return
-				} 
-
-				if(httpCode != HTTP.OK.toString())
-					reply("${header}${status(HTTP.OK)}", wire)
-
-				firmware.reroute(headerMap.get("origin") as int, 1, (headerMap.get("src") as int), this.port)
-				return
-			} else {
-				reply("${header}${status(HTTP.NOT_ACCEPTABLE)}", wire)
-				return
+				} else {
+					reply("${header}${status(HTTP.NOT_ACCEPTABLE)}", wire)
+					return
+				}
 			}
-		}
 
-		this.wired = wire
-		reply(header)
+			this.wired = wire
+			reply(header)
 		}catch(Exception e){e.printStackTrace()}
 	}
 
@@ -170,7 +177,10 @@ class SocketModule {
 				def src = map.get("src") as int
 				if(src == wired) {
 					def table = JSON.convertMap(map.get("table"))
-					firmware.routesUpdate(map.get("src") as int, table)
+					if(table)
+						firmware.routesUpdate(map.get("src") as int, table)
+					else
+						println "There is no table!"
 				}
 			}
 		}
@@ -184,7 +194,7 @@ class SocketModule {
 	private DatagramPacket createPacket (String data, Integer wire = wired)
 	{ createPacket( data.getBytes(), wire ) }
 	private DatagramPacket createPacket (byte[] data, Integer wire = wired) {
-		new DatagramPacket(
+		new DatagramPacket (
 			data,
 			data.length,
 			Firmware.domain,
@@ -214,8 +224,8 @@ class SocketModule {
 
 	// Generic method dispatcher 
 	private void handler(DatagramPacket packet) {
+		updated = true
 		def map = Protocol.packetHeader(packet)
-
 		if(map.get("action") != "rip")
 			println "${ANSI.GREEN}[MODULE] ${this.port}${ANSI.RESET} <- ${trim(packet)}"
 

@@ -3,7 +3,6 @@ package redes.routing.core
 import redes.routing.core.datastructure.Table
 
 import groovy.transform.ThreadInterrupt
-import groovy.lang.Lazy
 
 import java.net.InetAddress
 
@@ -20,13 +19,10 @@ import java.util.List
 class Firmware
 	extends Thread {
 
-    @Lazy
-	Properties properties
-
 	// Instance variables -------------------------------------------------------------
 
 		// #DEFINE
-		private static final int distance = 0
+		private static final int metric = 0
 		private static final int nextHop = 1
 
 		// Local host domain address
@@ -42,11 +38,12 @@ class Firmware
 		// Module connection Map<port, socket connection>
 		private static Map<Integer, SocketException> modules
 
-		// Rounting list table Map<destination, int[2]> -> [0]distance & [1]next hop
+		// Rounting list table Map<destination, int[2]> -> [0]metricance & [1]next hop
 		private static Map<Integer, Integer> localForwarding
 		private static Table routingTable
 
-		private static Thread thread
+		private static Thread share
+		private static Thread flush
 	// --------------------------------------------------------------------------------
 
 	// Start the router firmware
@@ -57,6 +54,8 @@ class Firmware
 		}
 
 		new Server().start()
+		share.start()
+		flush.start()
 	}
 
 	// Singleton access
@@ -68,19 +67,13 @@ class Firmware
 
 	// Singleton constructor
 	private Firmware() {
-	    this.getClass()
-	    	.getResource( Router.propertiesPath )
-	    	.withInputStream {
-	        	properties.load(it)
-	    	}
-
-		domain = InetAddress.getByName(properties."router.domain")
+		domain = InetAddress.getByName(Router.properties."router.domain")
 		localForwarding = new HashMap()
 		routingTable = new Table()
 		modules = new HashMap()
 
-		thread = new Thread(replayer)
-		thread.start()
+		share = new Thread(replayer)
+		flush = new Thread(flusher)
 	}
 
 
@@ -97,7 +90,7 @@ class Firmware
 
 	def send(int destination, String message) {
 		try { 
-			modules.get(localForwarding.get(routingTable.getNextHope(destination)))
+			modules.get(routingTable.getForwaringPort(routingTable.getNextHope(destination)))
 				   .send(message)
 		} catch (e) { return e.getLocalizedMessage() }
 	}
@@ -112,8 +105,10 @@ class Firmware
 	}
 
 	def unwireModule(int module) {
-		modules.get(module)
-			   .unwire()
+		try {
+			modules.get(module)
+				   .unwire()
+		} catch(Exception e) { e.printStackTrace() }
 	}
 
 	def listModules() {
@@ -142,14 +137,17 @@ class Firmware
 	def getRoutingTable() { routingTable.getList() }
 	def getReplyTable() { routingTable.getReplyList() }
 
+	def listRoutingTableAPI() { routingTable }
 	def listRoutingTable() {
 		routingTable.toString().replaceAll("-1", "local")
+							   .replaceAll("16, \\d+", "16, inalcancavel")
 	}
 
 	protected void routesUpdate(int nextHop, Map table) {
+		try {
 		routesUpdate(
 			nextHop,
-			table.entrySet()
+			table?.entrySet()
 				.stream()
 				.map( entry ->
 					Stream.of(
@@ -162,6 +160,7 @@ class Firmware
 				.map(x -> x.get(1))
 				.collect() as ArrayList
 		)
+		} catch (Exception e) { e.printStackTrace() }
 	}
 
 	protected void routesUpdate(int nextHop, ArrayList table) {
@@ -176,24 +175,39 @@ class Firmware
 	}
 
 	protected void reroute(int node) { routingTable.remove(node) }
-	protected void reroute(int dst, int dist, int nextHop, Integer local = null) {
-		// println "${dst} ${dist} ${nextHop}"
-		if(routingTable.contains(dst)) {
-			Integer[] info = routingTable.get(dst)
-			int distance = dist
-			if(info[this.distance] < dist)
-				distance = info[this.distance]
-			routingTable.add(dst, distance, nextHop)
-		} else {
-			routingTable.add(dst, dist, nextHop)
-		}
+	protected void reroute(int dst, int metric, int nextHop, Integer local = null) {
+		try {
+			if(routingTable.contains(dst)) {
+				Integer[] info = routingTable.get(dst)
+				int distance = info[this.metric]
+				if(info[this.metric] > metric || metric == 16)
+					distance = metric
+				routingTable.add(dst, distance, nextHop)
+			} else {
+				routingTable.add(dst, metric, nextHop)
+			}
 
-		if(dist > 0)
-			localForwarding.put(nextHop, local)
+			if(metric > 0)
+				routingTable.forwarding(nextHop, local)
+			else if (metric == 16)
+				routingTable.removeForwarding(local)
+
+		} catch (Exception e) { e.printStackTrace() }
+	}
+
+	def flushTable(){
+		ArrayList flushList = []
+		modules.each { port, module ->
+			if(!module.getAlive()) {
+				flushList.add(port)
+			}
+			module.resetAlive()
+		}
+		routingTable.flush(flushList)
 	}
 
     private int generatePort() {
-    	int begin = Integer.parseInt( properties."router.start.ip" )
+    	int begin = Integer.parseInt( Router.properties."router.start.ip" )
     	return (new Random().nextInt(65353-begin) + begin)
     }
 
@@ -225,11 +239,23 @@ class Firmware
 	/* Watch the port waiting for request */
 	private Runnable replayer = new Runnable() {
 		public void run() {
+			int time = Router.properties."router.timer.sharetable" as int
 			while(true) {
-				thread.sleep(10000)
-				modules.each { port, module ->
+				share.sleep(time)
+				modules?.each { port, module ->
 					module.rip(port)
 				}
+			}
+		}
+	}
+
+	/* Flush the table removing routes that has not updated */
+	private Runnable flusher = new Runnable() {
+		public void run() {
+			int time = Router.properties."router.timer.flushtable" as int
+			while(true) {
+				flush.sleep(time)
+				flushTable()
 			}
 		}
 	}

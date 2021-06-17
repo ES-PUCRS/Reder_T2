@@ -8,14 +8,18 @@ class JSON {
 	def static parse(Map map) {
 		def json = ""
 		map.each { key, value ->
-    		json += ", \"${key}\": \"${value}\""
+			if(!value.toString().startsWith('{'))
+				value = "\"${value}\""
+    		json += ", \"${key}\": ${value}"
 		}
 
 		"{${json.substring(1)} }"
 	}
 
 	def static parse(String key, String value) {
-		"{ \"${key}\": \"${value}\" }"
+		if(!value.toString().startsWith('{'))
+			value = "\"${value}\""
+		"{ \"${key}\": ${value} }"
 	}
 
 

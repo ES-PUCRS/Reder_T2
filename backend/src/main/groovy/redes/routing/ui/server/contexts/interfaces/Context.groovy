@@ -22,24 +22,6 @@ abstract class Context implements HttpHandler {
 		"css"	: "text/css"
 	]
 
-
-	/*
-	 * 	Private method due to import project properties to the heritage classes
-	 *
-	 *	return properties object
-	 */
-	def static importProperties(){
-		Properties properties = new Properties();
-		new Object() {}
-	    	.getClass()
-	    	.getResource( Router.propertiesPath )
-	    	.withInputStream {
-	        	properties.load(it)
-	    	}
-	    return properties
-	}
-
-
 	/*
 	 *	mapParams is used to split the uri string with params
 	 *	into a Map [:]

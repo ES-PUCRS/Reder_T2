@@ -17,6 +17,9 @@ class Table {
 	private Map<Integer, Integer> destinationKey
 	private Map<Integer, ArrayList<Integer>> hopKey
 	private Map<Integer, Integer[]> wrapper
+
+	private Map<Integer, Integer> forwarding
+	private Map<Integer, Integer> reverse
 	
 	private static final int destination = 0
 	private static final int metric = 1
@@ -26,6 +29,9 @@ class Table {
 		destinationKey = new HashMap()
 		hopKey = new HashMap()
 		wrapper = new HashMap()
+
+		forwarding = new HashMap()
+		reverse = new HashMap()
 	}
 
 
@@ -35,6 +41,10 @@ class Table {
 		} catch(Exception e) { e.printStackTrace() }
 	}
 
+	def contains(int destination) {
+		destinationKey.containsKey(destination)
+	}
+
 	def add(int destination, int metric, int hop) {
 		try{
 			def key = destinationKey.get(destination)
@@ -42,9 +52,14 @@ class Table {
 
 			if(key) {
 				arr = wrapper.get(key)
-				arr.add(this.destination, destination)
-				arr.add(this.metric, metric)
-				arr.add(this.hop, hop)
+				
+				if(arr) {
+					arr.set(this.destination, destination)
+					arr.set(this.metric, metric)
+					arr.set(this.hop, hop)
+				} else {
+					wrapper.put(key, [destination, metric, hop])
+				}
 			} else {
 				key = generateKey()
 				destinationKey.put(destination, key)
@@ -56,25 +71,15 @@ class Table {
 					hopKey.put(hop, Arrays.asList(key) as ArrayList)
 				}
 
-				println "------------BEFORE-------------"
-				println	wrapper
-				println key
-				println	wrapper.get(key)
-					// if(!wrapper.replace(key, [destination, metric, hop]))
-					wrapper.put(key, [destination, metric, hop])
-				println	wrapper.get(key)
-				println	wrapper
-				println "------------AFTER-------------"
-				
+				wrapper.put(key, [destination, metric, hop])
 			}
-		}catch(Exception e) {e.printStackTrace()}
+		} catch(Exception e) {e.printStackTrace()}
 	}
 
 	def sync(int nextHop, ArrayList table, ArrayList modules) {
 		def origin = arrayByHop(nextHop)
-		
+		try {
 		// println wrapper
-		println "------------------------------------------ run"
 
 		def local = new ArrayList(wrapper?.values())
 							.stream()
@@ -108,19 +113,21 @@ class Table {
 							)
 
 		remote.each { row ->
-			def localTable = local.get(row[this.destination])
-			if(!localTable || row[this.metric] < localTable[this.metric])
+			def localTable = local?.get(row[this.destination])
+			if(!localTable || (localTable[this.metric] != 16 && row[this.metric] < localTable[this.metric]))
 				add(row[this.destination], row[this.metric] + 1, nextHop)
 		}
 
 		missing.each { redirect ->
-			println "REMOVE:: ${redirect}"
+			remove(redirect[this.destination])
 		}
+
+		} catch (Exception e) { e.printStackTrace() }
 
 	}
 
 	def arrayByHop(int dst) {
-		wrapper?.values()
+		new ArrayList(wrapper?.values())
 				.stream()
 				.filter(x ->
 					dst == x[this.hop]
@@ -128,17 +135,39 @@ class Table {
 				.collect()
 	}
 
-	def contains(int destination) {
-		destinationKey.containsKey(destination)
+	def getFlushListMetric() {
+		new ArrayList(wrapper?.values())
+			.stream()
+			.filter(x ->
+				x[this.metric] == 16
+			)
+			.collect()
+	}
+
+	def flush(ArrayList flushListNotUpdate) {
+		getFlushListMetric()?.each{ item ->
+			remove(item[this.destination])
+		}
+
+		flushListNotUpdate?.each { local ->
+			def destination = getForwardingByLocalPort(local)
+			if(destination)
+				arrayByHop(destination)?.each{ it ->
+					add(it[this.destination], 16, it[this.hop])
+				}
+		}
 	}
 
 	def remove(int destination) {
 		try {
-			println destinationKey
 			def key = destinationKey.get(destination) 
-			def hop = wrapper.get(key)[this.hop]
-			ArrayList arr = hopKey.get(hop) as ArrayList
-			arr.remove(arr.indexOf(key))
+			def hop = wrapper?.get(key)
+			if(hop) {
+			hop = hop[this.hop]
+				removeForwarding(hop)
+				ArrayList arr = hopKey.get(hop) as ArrayList
+				arr?.remove(arr.indexOf(key))
+			}
 
 			destinationKey.remove(destination)
 			wrapper.remove(key)
@@ -150,7 +179,7 @@ class Table {
 	}
 
 	def getReplyList() {
-		wrapper?.values()
+		new ArrayList(wrapper?.values())
 				.stream()
 		        .flatMap(entry ->
 		        	Stream.of(
@@ -158,6 +187,7 @@ class Table {
 	        		)
 	        	)
 				.filter(x -> x.size() < 3)
+				.filter(x -> x[this.metric] < 16)
 		        .toArray()
 	}
 
@@ -170,6 +200,29 @@ class Table {
 
 		key
 	}
+
+	// ---------------------------------------------------------------
+
+	def forwarding(int nextHop, int local) {
+		forwarding.put(nextHop, local)
+		reverse.put(local, nextHop)
+	}
+
+	def getForwaringPort(int nextHop) {
+		forwarding.get(nextHop)
+	}
+
+	def getForwardingByLocalPort(int local) {
+		reverse.get(local)
+	}
+
+	def removeForwarding(int local) {
+		forwarding.remove(reverse.get(local))
+		forwarding.remove(local)
+	}
+
+
+	// ---------------------------------------------------------------
 
 	@Override
 	public String toString() {

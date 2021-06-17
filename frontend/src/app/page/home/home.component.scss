@@ -66,6 +66,12 @@
   display: flex;
 }
 
+.container > *{
+  margin-top: 6vh;
+}
+
+
+
 .sidebar {
   width: 20vw;
   display: flex;
@@ -94,7 +100,7 @@
   background-color: #ececec;
   width: 18vw;
   margin-left: 1vw;
-  margin-top: 5vh;
+  margin-top: 3vh;
   border-radius: 0.4em;
   height: 45vh;
   overflow-y: scroll;
@@ -106,7 +112,7 @@
   margin-left: 1vw;
   margin-top: 3vh;
   border-radius: 0.4em;
-  height: 35vh;
+  height: 34vh;
 }
 
 .cardHeader{

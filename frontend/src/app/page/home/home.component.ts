@@ -19,6 +19,8 @@ export class HomeComponent implements OnInit {
   contextMenuY: number = -1;
   contextMenuX: number = -1;
   router: Router | undefined;
+  selectedRouter: Router | undefined;
+
 
   selectedOption: string = "no Option selected";
   routerCount: number = 0;
@@ -31,7 +33,12 @@ export class HomeComponent implements OnInit {
       let aux: any = window.localStorage.getItem(objectKeys[i]);
       this.routers.push(new Router(objectKeys[i], aux));
     }
+    
     // console.log(this.routers[0] instanceof Router);
+  }
+
+  diselectRouter(){
+    this.selectedRouter = undefined;
   }
 
   open(event: MouseEvent, router: any): void {
@@ -39,6 +46,10 @@ export class HomeComponent implements OnInit {
     this.contextMenuY = event.clientY
     this.router = router;
     this.contextMenu = true;
+  }
+
+  selectRouter(router: any){
+    this.selectedRouter = router;
   }
 
   disableContextMenu(): void {

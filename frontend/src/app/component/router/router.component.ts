@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from 'src/app/interface/router';
 
+
 @Component({
   selector: 'app-router',
   templateUrl: './router.component.html',
@@ -13,8 +14,13 @@ export class RouterComponent implements OnInit {
 
   constructor() {
    }
+   
 
   ngOnInit(): void {
+  }
+
+  diselectRouter(){
+    
   }
 
 }

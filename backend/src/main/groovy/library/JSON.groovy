@@ -1,6 +1,7 @@
 package library
 
 import java.util.IllegalFormatException
+import java.util.stream.Collectors;
 
 class JSON {
 
@@ -36,7 +37,30 @@ class JSON {
 	def static verify(String json) {
 		if(false)
 			throw new IllegalFormatException("The json is incorrectly formated and can not be auto fixed")
+
 		json
 	}
+
+
+   	/*
+   	 *   TODO
+   	 */
+   	public static Map convertMap(String str) {
+   	   	if(str.charAt(0) != '[' && str.charAt(str.length() - 1) != ']')
+   	   		throw new IllegalArgumentException("Invalid format")
+   	   	try{
+   	   	   	Arrays.stream(
+   	   	     	str.replaceAll("\\[|\\]","")
+   	   	     	.split(", ")
+   	   	   	)
+   	   	   	.map(string -> string.replaceAll("\\s","").split(":"))
+			.collect(
+				Collectors.toMap(
+					array -> array[0],
+					array -> array[1]
+				)
+			)
+   	   	} catch(Exception e) { println(e.getLocalizedMessage()) }
+   	}
 
 }

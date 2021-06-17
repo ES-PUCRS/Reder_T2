@@ -23,6 +23,7 @@
 		    // Facilitar minha vida testando. Moh mão fazer esse wire.
 		    setup: async function() {
     			let target = ''
+    			let _last = ''
 
 				let res = await fetch(
 					'http://localhost:1010/install?object=module&port=1011'
@@ -58,9 +59,56 @@
 	    				return
 	    			}
     			} catch (e) {
-    				this.error("Error wiring modules -> " + e.message)
+    				this.error("Error wiring routers 1010 & 1020 -> " + e.message)
 					return
     			}
+
+    			if(true){
+	    			try {
+		    			res = await fetch(
+		    				'http://localhost:1020/API/install?object=module&port=1022'
+		    			)
+		    			res = await res.json()
+				    	if (res.error != undefined) {
+		    				this.error(res.error)
+		    				return
+		    			} else {
+		    				_target = res.port
+		    			}
+	    			} catch (e) {
+	    				this.error('Error on 1020 api request -> ' + e.message)
+	    				return
+	    			}
+
+					try {
+		    			res = await fetch(
+		    				'http://localhost:1030/API/install?object=module&port=1031'
+		    			)
+		    			res = await res.json()
+				    	if (res.error != undefined) {
+		    				this.error(res.error)
+		    				return
+		    			} else {
+		    				_last = res.port
+		    			}
+	    			} catch (e) {
+	    				this.error('Error on 1030 api request -> ' + e.message)
+	    				return
+	    			}
+					try {
+						res = await fetch(
+							'http://localhost:1030/API/wire?object=module&index='+_last+'&target='+_target
+						)
+			    		res = await res.json()
+				    	if (res.error != undefined) {
+		    				this.error(res.error)
+		    				return
+		    			}
+	    			} catch (e) {
+	    				this.error("Error wiring routers 1020 & 1030 -> " + e.message)
+						return
+	    			}
+	    		}
 
     			return '\tdone'
 
@@ -75,7 +123,7 @@
 		    tracert: function(...args) {
 		    	this.echo('On development')
 		    },
-		    
+
 
 		    install: async function(...args) {
 		    	const options = $.terminal.parse_options(args)

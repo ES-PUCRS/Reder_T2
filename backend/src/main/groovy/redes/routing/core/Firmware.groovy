@@ -1,5 +1,7 @@
 package redes.routing.core
 
+import redes.routing.core.datastructure.Table
+
 import groovy.transform.ThreadInterrupt
 import groovy.lang.Lazy
 
@@ -7,6 +9,12 @@ import java.net.InetAddress
 
 import redes.routing.ui.server.Server
 import redes.routing.Router
+
+import java.util.stream.Collectors
+import java.util.stream.Stream
+import java.util.Collections
+import java.util.ArrayList
+import java.util.List
 
 @ThreadInterrupt
 class Firmware
@@ -19,7 +27,7 @@ class Firmware
 
 		// #DEFINE
 		private static final int distance = 0
-		private static final int nextHope = 1
+		private static final int nextHop = 1
 
 		// Local host domain address
 		public static InetAddress domain
@@ -35,9 +43,10 @@ class Firmware
 		private static Map<Integer, SocketException> modules
 
 		// Rounting list table Map<destination, int[2]> -> [0]distance & [1]next hop
-		private static Map<Integer, Integer[]> routingTable
-		private static Map<Integer, Integer> wiring
+		private static Map<Integer, Integer> localForwarding
+		private static Table routingTable
 
+		private static Thread thread
 	// --------------------------------------------------------------------------------
 
 	// Start the router firmware
@@ -66,18 +75,19 @@ class Firmware
 	    	}
 
 		domain = InetAddress.getByName(properties."router.domain")
-		routingTable = new HashMap()
+		localForwarding = new HashMap()
+		routingTable = new Table()
 		modules = new HashMap()
-		wiring = new HashMap()
+
+		thread = new Thread(replayer)
+		thread.start()
 	}
 
 
 	def installModule(Integer port = null) {
 		try {
 			do { port = available(port) } while ( !port )
-
 			modules.put(port, new SocketModule( port )) }
-
 		catch (SocketException se) { return se.getLocalizedMessage() }
 
 		port
@@ -87,7 +97,7 @@ class Firmware
 
 	def send(int destination, String message) {
 		try { 
-			modules.get(routingTable.get(destination)[nextHope])
+			modules.get(localForwarding.get(routingTable.getNextHope(destination)))
 				   .send(message)
 		} catch (e) { return e.getLocalizedMessage() }
 	}
@@ -119,33 +129,67 @@ class Firmware
 		modules.get(module)
 		       .stop()
 	}
-	
+
+
 	def removeModule(int module) {
-		modules.get(module)
-			   .kill()
-		modules.remove(module)
+		try {
+			modules.get(module).kill()
+			reroute(module)
+			modules.remove(module)
+		} catch (Exception e) {e.printStackTrace()}
 	}
 
+	def getRoutingTable() { routingTable.getList() }
+	def getReplyTable() { routingTable.getReplyList() }
 
 	def listRoutingTable() {
-		String routes = routingTable.toString()
-		//TODO -> Formatar o retorno da routing table
-		routes
+		routingTable.toString().replaceAll("-1", "local")
 	}
 
-	protected void reroute(int node) {
-		routingTable.remove(node)
+	protected void routesUpdate(int nextHop, Map table) {
+		routesUpdate(
+			nextHop,
+			table.entrySet()
+				.stream()
+				.map( entry ->
+					Stream.of(
+        				entry, new int[] {
+        					entry.getKey() as int,
+        					entry.getValue() as int
+        				}
+    				).collect()
+				)
+				.map(x -> x.get(1))
+				.collect() as ArrayList
+		)
 	}
-	protected void reroute(int dst, int dist, int module) {
-		if(routingTable.containsKey(dst)) {
+
+	protected void routesUpdate(int nextHop, ArrayList table) {
+		routingTable.sync(
+			nextHop,
+			table,
+			modules
+				.keySet()
+			  	.stream()
+			  	.collect(Collectors.toList()) as ArrayList
+		)
+	}
+
+	protected void reroute(int node) { routingTable.remove(node) }
+	protected void reroute(int dst, int dist, int nextHop, Integer local = null) {
+		// println "${dst} ${dist} ${nextHop}"
+		if(routingTable.contains(dst)) {
 			Integer[] info = routingTable.get(dst)
 			int distance = dist
 			if(info[this.distance] < dist)
 				distance = info[this.distance]
-			routingTable.put(dst, [distance, module])
+			routingTable.add(dst, distance, nextHop)
 		} else {
-			routingTable.put(dst, [dist, module])
+			routingTable.add(dst, dist, nextHop)
 		}
+
+		if(dist > 0)
+			localForwarding.put(nextHop, local)
 	}
 
     private int generatePort() {
@@ -176,5 +220,18 @@ class Firmware
         }
         return available()
     }
+
+
+	/* Watch the port waiting for request */
+	private Runnable replayer = new Runnable() {
+		public void run() {
+			while(true) {
+				thread.sleep(10000)
+				modules.each { port, module ->
+					module.rip(port)
+				}
+			}
+		}
+	}
 
 }

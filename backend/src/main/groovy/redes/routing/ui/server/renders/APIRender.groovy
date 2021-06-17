@@ -43,6 +43,9 @@ class APIRender extends Render {
 		} catch (e) { if(new Boolean(properties."api.debug")) println e.getLocalizedMessage() 
 			response = JSON.parse("error", e.getLocalizedMessage()) }
 
+		if(response == "{ \"error\": \"null\" }")
+			response = "{}"
+			
 		def binding = [
 			'variable' : JSON.verify(response)
 		]
@@ -82,7 +85,7 @@ class APIRender extends Render {
 								.getInstance()
 								.listRoutingTable() as String
 
-				if(response == "[:]"){
+				if(response == "[:]") {
 					response = "\\tThe ip table is empty."
 				} else {
 					response = response
@@ -182,6 +185,9 @@ class APIRender extends Render {
 				JSON.parse("error", "Object was not defined")
 		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
 		
+		// TODO Remove this on API
+		if(response == "{ \"error\": \"null\" }")
+			response = "{}"
 
 		def binding = ['variable': JSON.verify(response)]
 		super.build(binding)

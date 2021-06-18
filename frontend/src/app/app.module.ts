@@ -21,6 +21,8 @@ import { DeleteRouterComponent } from './component/context-menu/menu-items/delet
 import { ConfigureModuleComponent } from './component/context-menu/menu-items/configure-module/configure-module.component';
 import { CreateModuleComponent } from './component/context-menu/menu-items/create-module/create-module.component';
 import { ConnectRouterComponent } from './component/context-menu/menu-items/connect-router/connect-router.component';
+import { HighchartsChartModule } from 'highcharts-angular';
+import { PlotDataComponent } from './component/plot-data/plot-data.component';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -32,7 +34,8 @@ import { ConnectRouterComponent } from './component/context-menu/menu-items/conn
     DeleteRouterComponent,
     ConfigureModuleComponent,
     CreateModuleComponent,
-    ConnectRouterComponent
+    ConnectRouterComponent,
+    PlotDataComponent
   ],
   imports: [
     MatButtonModule,
@@ -46,7 +49,8 @@ import { ConnectRouterComponent } from './component/context-menu/menu-items/conn
     FormsModule,
     DragDropModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    HighchartsChartModule
   ],
   bootstrap: [AppComponent],
   providers: []

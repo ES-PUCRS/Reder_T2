@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'src/app/interface/menu-item';
+import { Router } from 'src/app/interface/router';
+import { ShareDataService } from 'src/app/services/share-data.service';
 import { MenuItemsComponent } from '../shared/menu-items.component';
 
 @Component({
@@ -7,30 +9,50 @@ import { MenuItemsComponent } from '../shared/menu-items.component';
   templateUrl: '../shared/menu-items.component.html',
   styleUrls: ['../shared/menu-items.component.scss']
 })
+  
 export class ConnectRouterComponent extends MenuItemsComponent implements OnInit {
 
-  constructor() {
+  constructor(private shareDataService: ShareDataService) {
     super();
     const menuItem = new MenuItem();
 
     menuItem.name = "Connect Router";
-    menuItem.operation = this.operator;
+    menuItem.operation = this.operation;
     menuItem.dropdownOpen = false;
     super.option = menuItem;
-    
-    const submenu1 = new MenuItem();
-    submenu1.name = "Test";
-    submenu1.operation = this.operator;
-    submenu1.dropdown = [];
-    submenu1.dropdownOpen = false;
+    menuItem.dropdown = this.setRouters();
 
-    menuItem.dropdown = [submenu1];
+  }
+
+  setRouters() {
+    let routers: Router[] = [];
+    let menuItems: MenuItem[] = [];
+    this.shareDataService.routers.subscribe((routerList) => routers = routerList);
+
+    routers.forEach(element => {
+      // if(element.port !== super.){
+      menuItems.push(new MenuItem());
+      let index = menuItems.length - 1;
+      menuItems[index].name = `${element.port}`;
+      menuItems[index].operation = () => { this.subOperation(element) };
+      menuItems[index].dropdown = [];
+      menuItems[index].dropdownOpen = false;
+      // }
+    });
+
+    return menuItems;
   }
 
   ngOnInit(): void {
   }
 
-  operator = () => {
-    console.log('Connect to router TODO');
+  operation = () => {
+
+  }
+  subOperation = (router: Router) => {
+    console.log(router);
+
+    this.Highcharts.charts[0]?.series[0].addPoint([router.port, this.router.port]);
+
   }
 }

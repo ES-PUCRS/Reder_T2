@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import HighchartsNetworkgraph from "highcharts/modules/networkgraph";
+import { Connection } from 'src/app/interface/connection';
 import { Router } from 'src/app/interface/router';
+import { ShareDataService } from 'src/app/services/share-data.service';
 declare var require: any
 
 
@@ -19,7 +21,7 @@ export class PlotDataComponent implements OnInit {
   router: Router = new Router("", -1);
   @Input() contextmenu = null;
 
-  constructor() { }
+  constructor(private shareDataService: ShareDataService) { }
 
   ngOnInit(): void {
 
@@ -43,16 +45,16 @@ export class PlotDataComponent implements OnInit {
           text: ""
         },
         tooltip: {
-          enabled: false
+          enabled: true
         },
         series: [{
           showInLegend: false,
-          data: [
-            ['Celtic', 'Balto-Slavic'],
-            ['Celtic', 'Italic'],
-            ['Proto Indo-European', 'Celtic'],
-            ['Proto Indo-European', 'Italic'],
-          ],
+          // data: [
+          //   ['Celtic', 'Balto-Slavic'],
+          //   ['Celtic', 'Italic'],
+          //   ['Proto Indo-European', 'Celtic'],
+          //   ['Proto Indo-European', 'Italic'],
+          // ],
           type: 'networkgraph',
           lineWidth: 0
 
@@ -117,11 +119,13 @@ export class PlotDataComponent implements OnInit {
             point: {
               events: {
                 drop: function (e) {
-                  console.log(e);
+                  // console.log(e);
                 },
-                click: ((e: MouseEvent) => {
+                click:  ((e:any) => {
+                  console.log(e)
                   this.open({ clientX: e.clientX, clientY: e.clientY } as MouseEvent, "");
-                  e.stopPropagation();
+                  e.stopPropagation
+                  ();
                 }).bind(this),
 
               }
@@ -132,22 +136,32 @@ export class PlotDataComponent implements OnInit {
           }
         }
       }
-    )   
+    )  
+    this.setData();
   }
   open({clientX, clientY} :MouseEvent, router: any): void {
      this.contextMenuX = clientX
     this.contextMenuY = clientY
     this.router = router;
     this.contextMenu = true;
+    console.log(router);
   }
 
   disableContextMenu(): void {
     this.contextMenu = false;
   }
 
-  addData() {
-    Highcharts.charts[0]?.series[0].addPoint(['Germanic', 'Celtic']);
+  setData() {
+    let connections: Connection[] = [];
+        
+    this.shareDataService.connections.subscribe((connection) => {connections = connection;}
+    )
+    connections.forEach((connection) => {
+      this.Highcharts.charts[0]?.series[0].addPoint([connection.routerA.port, connection.routerB.port]);
+    })
+    
   }
+
 
   
 }

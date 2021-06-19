@@ -1,25 +1,22 @@
-import { AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { MenuItem } from 'src/app/interface/menu-item';
+import * as Highcharts from 'highcharts';
+import { Router } from 'src/app/interface/router';
 
 @Component({
   selector: 'app-menu-items',
   templateUrl: './menu-items.component.html',
   styleUrls: ['./menu-items.component.scss']
 })
-export class MenuItemsComponent implements OnInit, AfterViewInit {
+export class MenuItemsComponent implements OnInit {
 
   @Input() position: number = 0;
-  
-  option: MenuItem;
+  @Input() Highcharts: typeof Highcharts = Highcharts; // required
+  @Input() router: Router = new Router("", -1);
+
+  option: MenuItem = new MenuItem();
 
   constructor() {
-    this.option = new MenuItem();
-  }
-  ngAfterViewInit(): void {
-
-  }
-  test() {
-    return this.position * 29;
   }
 
   ngOnInit(): void {

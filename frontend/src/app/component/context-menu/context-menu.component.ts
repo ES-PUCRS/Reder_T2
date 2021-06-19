@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import * as Highcharts from 'highcharts';
 
 @Component({
   selector: 'app-context-menu',
@@ -11,12 +12,14 @@ export class ContextMenuComponent implements OnInit {
   @Input() x = 0;
   @Input() y = 0;
   @Input() router: any;
+  @Input() Highcharts: typeof Highcharts = Highcharts; // required
 
   constructor() {
 
   }
 
   ngOnInit(): void {
+    
   }
 
 }

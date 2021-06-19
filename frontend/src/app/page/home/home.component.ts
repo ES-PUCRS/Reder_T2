@@ -13,8 +13,6 @@ export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService) {
   }
 
-  @ViewChild('trigger', { static: true })
-  trigger: MatMenuTrigger | undefined;
   contextMenu: boolean = false;
   contextMenuY: number = -1;
   contextMenuX: number = -1;
@@ -31,19 +29,8 @@ export class HomeComponent implements OnInit {
       let aux: any = window.localStorage.getItem(objectKeys[i]);
       this.routers.push(new Router(objectKeys[i], aux));
     }
-    // console.log(this.routers[0] instanceof Router);
   }
-
-  open(event: MouseEvent, router: any): void {
-    this.contextMenuX = event.clientX
-    this.contextMenuY = event.clientY
-    this.router = router;
-    this.contextMenu = true;
-  }
-
-  disableContextMenu(): void {
-    this.contextMenu = false;
-  }
+  
 
   sendPost() {
     let res: any;

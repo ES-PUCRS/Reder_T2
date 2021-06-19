@@ -31,6 +31,6 @@ export class ConnectRouterComponent extends MenuItemsComponent implements OnInit
   }
 
   operator = () => {
-    console.log('aff');
+    console.log('Connect to router TODO');
   }
 }

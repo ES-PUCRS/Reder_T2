@@ -25,6 +25,6 @@ export class CreateModuleComponent extends MenuItemsComponent implements OnInit 
   }
 
   operator = () => {
-    console.log('aff');
+    console.log('Create module TODO');
   }
 }

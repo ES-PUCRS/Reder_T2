@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
+import HighchartsNetworkgraph from "highcharts/modules/networkgraph";
+import { Router } from 'src/app/interface/router';
 declare var require: any
+
 
 @Component({
   selector: 'app-plot-data',
@@ -9,42 +12,52 @@ declare var require: any
 })
 export class PlotDataComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts; // required
-  // chart: Highcharts.Chart = Highcharts.chart("Highcharts", {});
   chartConstructor: string = 'chart'; // optional string, defaults to 'chart'
-  // chartOptions: Highcharts.Options = {
-    
-    //   ]
-    // };
-    constructor() { }
-    
-    ngOnInit(): void {
-    
+  contextMenu: boolean = false;
+  contextMenuY: number = -1;
+  contextMenuX: number = -1;
+  router: Router = new Router("", -1);
+  @Input() contextmenu = null;
+
+  constructor() { }
+
+  ngOnInit(): void {
+
     this.initialize();
   }
 
   initialize() {
     const Draggable = require("highcharts/modules/draggable-points.js");
     Draggable(Highcharts);
+    HighchartsNetworkgraph(Highcharts);
     Highcharts.chart('Highcharts',
       {
         chart: {
-          // height: "100%",
-          // width: "100%",
-
+          type: 'networkgraph',
+          animation: {
+            duration: 0
+          }
         },
+
         title: {
-          text:""
+          text: ""
         },
         tooltip: {
-          enabled:false
+          enabled: false
         },
         series: [{
           showInLegend: false,
-          data: [1, 2, 3],
-          type: 'scatter',
+          data: [
+            ['Celtic', 'Balto-Slavic'],
+            ['Celtic', 'Italic'],
+            ['Proto Indo-European', 'Celtic'],
+            ['Proto Indo-European', 'Italic'],
+          ],
+          type: 'networkgraph',
           lineWidth: 0
-          
-        }],
+
+        },
+        ],
         xAxis: {
           max: 100,
           min: 0,
@@ -79,7 +92,22 @@ export class PlotDataComponent implements OnInit {
           tickLength: 0
         },
         plotOptions: {
+          networkgraph: {
+            keys: ['from', 'to'],
+            layoutAlgorithm: {
+              maxIterations: 0,
+              friction: 0,
+              repulsiveForce: () => { 0 },
+              initialPositions: 'random'
+            }
+          },
           series: {
+            states: {
+              hover: {
+                enabled: true
+              },
+              inactive: { enabled: false }
+            },
             dragDrop: {
               draggableX: true,
               draggableY: true,
@@ -90,24 +118,36 @@ export class PlotDataComponent implements OnInit {
               events: {
                 drop: function (e) {
                   console.log(e);
-                }
+                },
+                click: ((e: MouseEvent) => {
+                  this.open({ clientX: e.clientX, clientY: e.clientY } as MouseEvent, "");
+                  e.stopPropagation();
+                }).bind(this),
+
               }
             },
             marker: {
-              symbol: "url(assets/router.png)" 
+              symbol: "url(assets/router.png)"
             }
           }
-          
-
         }
-      } 
-    )
+      }
+    )   
+  }
+  open({clientX, clientY} :MouseEvent, router: any): void {
+     this.contextMenuX = clientX
+    this.contextMenuY = clientY
+    this.router = router;
+    this.contextMenu = true;
+  }
 
-
+  disableContextMenu(): void {
+    this.contextMenu = false;
   }
 
   addData() {
-    Highcharts.charts[0]?.series[0].addPoint({ x: 10, y: 20 });
+    Highcharts.charts[0]?.series[0].addPoint(['Germanic', 'Celtic']);
   }
 
+  
 }

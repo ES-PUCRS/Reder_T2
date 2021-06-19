@@ -13,7 +13,7 @@ export class SelectorComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.position);
+    return;
   }
 
 }

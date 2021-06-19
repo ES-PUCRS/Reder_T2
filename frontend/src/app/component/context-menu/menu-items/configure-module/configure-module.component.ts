@@ -25,6 +25,6 @@ export class ConfigureModuleComponent extends MenuItemsComponent implements OnIn
   }
 
   operator = () => {
-    console.log('aff');
+    console.log('Configure Module TODO');
   }
 }

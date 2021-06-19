@@ -21,17 +21,11 @@
   </div>
 
   <!-- THis div below represents alls ROUTERS -->
-  <div class="box-boundary" (click)="disableContextMenu()" (contextmenu)="$event.preventDefault();">
-    <app-plot-data></app-plot-data>
-    <!-- <div *ngFor='let router of routers' [style.width.px]="77">
-      <app-router [router]=router (contextmenu)="open($event, router); $event.preventDefault();">
-      </app-router>
-    </div> -->
+  <div class="box-boundary" (contextmenu)="$event.preventDefault();">
+    <app-plot-data ></app-plot-data>
   </div>
+
 <!-- 
   This div below represents the CONTEXT MENU, Appears when using the RIGHT BUTTON
-  <div *ngIf="contextMenu">
-    <app-context-menu [x]="contextMenuX" [y]="contextMenuY" [router]="router"></app-context-menu>
-  </div> -->
-
+-->
 </div>

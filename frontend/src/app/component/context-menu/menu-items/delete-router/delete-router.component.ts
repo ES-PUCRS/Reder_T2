@@ -41,6 +41,6 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
   }
 
   operator = () => {
-    console.log('aff');
+    console.log('Delete Router TODO');
   }
 }

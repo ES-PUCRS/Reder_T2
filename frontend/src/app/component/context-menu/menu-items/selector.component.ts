@@ -4,8 +4,7 @@ import { Router } from 'src/app/interface/router';
 
 @Component({
   selector: 'app-selector',
-  templateUrl: './selector.component.html',
-  styleUrls: ['./selector.component.scss']
+  templateUrl: './selector.component.html'
 })
 export class SelectorComponent implements OnInit {
 
@@ -17,7 +16,6 @@ export class SelectorComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    return;
   }
 
 }

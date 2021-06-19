@@ -23,6 +23,7 @@ import { CreateModuleComponent } from './component/context-menu/menu-items/creat
 import { ConnectRouterComponent } from './component/context-menu/menu-items/connect-router/connect-router.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { PlotDataComponent } from './component/plot-data/plot-data.component';
+import { DisconnectRouterComponent } from './component/context-menu/menu-items/disconnect-router/disconnect-router.component';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -35,7 +36,8 @@ import { PlotDataComponent } from './component/plot-data/plot-data.component';
     ConfigureModuleComponent,
     CreateModuleComponent,
     ConnectRouterComponent,
-    PlotDataComponent
+    PlotDataComponent,
+    DisconnectRouterComponent
   ],
   imports: [
     MatButtonModule,

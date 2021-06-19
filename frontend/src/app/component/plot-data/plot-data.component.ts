@@ -29,6 +29,7 @@ export class PlotDataComponent implements OnInit {
   }
 
   initialize() {
+    const that = this;
     const Draggable = require("highcharts/modules/draggable-points.js");
     Draggable(Highcharts);
     HighchartsNetworkgraph(Highcharts);
@@ -45,19 +46,12 @@ export class PlotDataComponent implements OnInit {
           text: ""
         },
         tooltip: {
-          enabled: true
+          enabled: false
         },
         series: [{
           showInLegend: false,
-          // data: [
-          //   ['Celtic', 'Balto-Slavic'],
-          //   ['Celtic', 'Italic'],
-          //   ['Proto Indo-European', 'Celtic'],
-          //   ['Proto Indo-European', 'Italic'],
-          // ],
           type: 'networkgraph',
           lineWidth: 0
-
         },
         ],
         xAxis: {
@@ -95,6 +89,7 @@ export class PlotDataComponent implements OnInit {
         },
         plotOptions: {
           networkgraph: {
+            dataLabels: { enabled: true },
             keys: ['from', 'to'],
             layoutAlgorithm: {
               maxIterations: 0,
@@ -121,13 +116,12 @@ export class PlotDataComponent implements OnInit {
                 drop: function (e) {
                   // console.log(e);
                 },
-                click:  ((e:any) => {
-                  console.log(e)
-                  this.open({ clientX: e.clientX, clientY: e.clientY } as MouseEvent, "");
-                  e.stopPropagation
-                  ();
-                }).bind(this),
-
+                click: function (e: MouseEvent) {
+                  let router = new Router("", -1);
+                  router = that.getRouter(this.name)
+                  that.open({ clientX: e.clientX, clientY: e.clientY } as MouseEvent, router);
+                  e.stopPropagation();
+                },
               }
             },
             marker: {
@@ -136,15 +130,16 @@ export class PlotDataComponent implements OnInit {
           }
         }
       }
-    )  
+    )
     this.setData();
   }
-  open({clientX, clientY} :MouseEvent, router: any): void {
-     this.contextMenuX = clientX
+  open({ clientX, clientY }: MouseEvent, router: Router): void {
+    this.contextMenuX = clientX
     this.contextMenuY = clientY
     this.router = router;
     this.contextMenu = true;
-    console.log(router);
+
+
   }
 
   disableContextMenu(): void {
@@ -153,15 +148,21 @@ export class PlotDataComponent implements OnInit {
 
   setData() {
     let connections: Connection[] = [];
-        
-    this.shareDataService.connections.subscribe((connection) => {connections = connection;}
+
+    this.shareDataService.connections.subscribe((connection) => { connections = connection; }
     )
     connections.forEach((connection) => {
       this.Highcharts.charts[0]?.series[0].addPoint([connection.routerA.port, connection.routerB.port]);
     })
-    
+  }
+
+  getRouter(name: string): Router {
+    let routerList: Router[] = [];
+    this.shareDataService.routers.subscribe((_routerList) => routerList = _routerList);
+    let router = routerList.find((_router) => { return `${_router.port}` === name });
+    if (router === undefined) router = new Router("", -1);
+    return router;
   }
 
 
-  
 }

@@ -20,6 +20,6 @@ export class MenuItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    
   }
 }

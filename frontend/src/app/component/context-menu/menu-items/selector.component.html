@@ -1,8 +1,10 @@
 <div>
     <div [ngSwitch]="component">
-        <configure-module-option *ngSwitchCase="'configure_module'" [position]=position [Highcharts] = "Highcharts" [router] = "router"></configure-module-option>
-        <connect-router-option *ngSwitchCase="'connect_router'" [position]=position [Highcharts] = "Highcharts" [router] = "router"></connect-router-option>
-        <create-module-option *ngSwitchCase="'create_module'" [position]=position [Highcharts] = "Highcharts" [router] = "router"></create-module-option>
-        <delete-router-option *ngSwitchCase="'delete_router'" [position]=position [Highcharts] = "Highcharts" [router] = "router"></delete-router-option>
+        <configure-module-option *ngSwitchCase="'configure_module'" [position]=position [Highcharts] = "Highcharts" [router] = router></configure-module-option>
+        <connect-router-option *ngSwitchCase="'connect_router'" [position]=position [Highcharts] = "Highcharts" [router] = router></connect-router-option>
+        <disconnect-router-option *ngSwitchCase="'disconnect_router'" [position]=position [Highcharts] = "Highcharts" [router] = router></disconnect-router-option>
+        <create-module-option *ngSwitchCase="'create_module'" [position]=position [Highcharts] = "Highcharts" [router] = router></create-module-option>
+        <delete-router-option *ngSwitchCase="'delete_router'" [position]=position [Highcharts] = "Highcharts" [router] = router></delete-router-option>
+        
     </div>
 </div>

@@ -15,7 +15,7 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
     super();
     const menuItem = new MenuItem();
 
-    menuItem.name = "Delete Router";
+    menuItem.name = "Delete Router"
     menuItem.operation = this.operator;
     menuItem.dropdown = [];
     menuItem.dropdownOpen = false;

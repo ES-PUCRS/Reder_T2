@@ -16,6 +16,7 @@ export class ShareDataService {
 
 
   constructor() {
+    this.mock_data();
     let routers: Router[] = [];
     let objectKeys = Object.keys(window.localStorage);
     for (let i = 0; i < window.localStorage.length; i++) {
@@ -29,7 +30,6 @@ export class ShareDataService {
     this.update_router(routers);
     this.update_connection(connections);
 
-
   }
   get routers() {
     return this.currentRouterList;
@@ -42,9 +42,17 @@ export class ShareDataService {
 
     this.router_list.next(routers);
   }
-  
+
   update_connection(connections: Connection[]) {
 
     this.connection_list.next(connections);
+  }
+
+  //SHOULD BE REMOVED!!!!!!!!
+  mock_data() {
+    localStorage.setItem("Router 1", "5031")
+    localStorage.setItem("Router 2", "7109")
+    localStorage.setItem("Router 3", "1455")
+    localStorage.setItem("Router 4", "3362")
   }
 }

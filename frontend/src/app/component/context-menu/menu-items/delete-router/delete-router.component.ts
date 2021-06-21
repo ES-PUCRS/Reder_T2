@@ -41,6 +41,5 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
       }
     });
     this.shareDataService.update_connection(connection_list);
-    // this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
   }
 }

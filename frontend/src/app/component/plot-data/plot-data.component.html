@@ -1,0 +1,13 @@
+<highcharts-chart 
+id="Highcharts"
+  [Highcharts]="Highcharts"
+
+  [constructorType]="chartConstructor"
+  style="width: 100%; height: 400px; display: block;"
+  (click)="disableContextMenu()"
+  (contextmenu)="$event.preventDefault();"
+></highcharts-chart>
+
+<div *ngIf="contextMenu">
+  <app-context-menu [x]="contextMenuX" [y]="contextMenuY" [router]="router" [Highcharts] = "Highcharts" [router] = "router"></app-context-menu>
+</div> 

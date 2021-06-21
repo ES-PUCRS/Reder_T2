@@ -21,9 +21,9 @@ import { DeleteRouterComponent } from './component/context-menu/menu-items/delet
 import { ConfigureModuleComponent } from './component/context-menu/menu-items/configure-module/configure-module.component';
 import { CreateModuleComponent } from './component/context-menu/menu-items/create-module/create-module.component';
 import { ConnectRouterComponent } from './component/context-menu/menu-items/connect-router/connect-router.component';
-import { ClickOutsideModule } from 'ng-click-outside';
-import { FlexLayoutModule } from "@angular/flex-layout";
-
+import { HighchartsChartModule } from 'highcharts-angular';
+import { PlotDataComponent } from './component/plot-data/plot-data.component';
+import { DisconnectRouterComponent } from './component/context-menu/menu-items/disconnect-router/disconnect-router.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +36,9 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     DeleteRouterComponent,
     ConfigureModuleComponent,
     CreateModuleComponent,
-    ConnectRouterComponent
+    ConnectRouterComponent,
+    PlotDataComponent,
+    DisconnectRouterComponent
   ],
   imports: [
     FlexLayoutModule,
@@ -52,7 +54,8 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     FormsModule,
     DragDropModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    HighchartsChartModule
   ],
   bootstrap: [AppComponent],
   providers: []

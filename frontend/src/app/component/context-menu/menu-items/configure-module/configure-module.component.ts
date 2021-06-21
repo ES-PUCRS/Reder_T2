@@ -22,9 +22,12 @@ export class ConfigureModuleComponent extends MenuItemsComponent implements OnIn
   }
 
   ngOnInit(): void {
+    
+    
+
   }
 
   operator = () => {
-    console.log('aff');
+    console.log('Configure Module TODO');
   }
 }

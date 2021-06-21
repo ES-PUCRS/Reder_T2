@@ -33,8 +33,7 @@ export class DisconnectRouterComponent extends MenuItemsComponent implements OnI
     let connectionList: Connection[] = [];
     let menuItems: MenuItem[] = [];
     this.shareDataService.connections.subscribe((_connectionList) => connectionList = _connectionList);
-    
-    console.log(connectionList);
+
     connectionList.forEach(element => {
       if ((element.routerA.port === this.router.port && element.routerB.port === this.router.port)) return;
       if ((element.routerA.port === this.router.port || element.routerB.port === this.router.port)) {
@@ -57,7 +56,6 @@ export class DisconnectRouterComponent extends MenuItemsComponent implements OnI
   }
 
   subOperation(router: Router) {
-    console.log("a");
     this.Highcharts.charts[0]?.series[0].data.forEach((conn) => {
       if (conn.options.from !== undefined && conn.options.to !== undefined)
         if ((conn.options.from === `${router.port}` && conn.options.to === `${this.router.port}`) ||
@@ -77,5 +75,6 @@ export class DisconnectRouterComponent extends MenuItemsComponent implements OnI
     });
     connection_list.splice(index, 1)
     this.shareDataService.update_connection(connection_list);
+    this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
   }
 }

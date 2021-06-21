@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Connection } from 'src/app/interface/connection';
 import { MenuItem } from 'src/app/interface/menu-item';
+import { ShareDataService } from 'src/app/services/share-data.service';
 import { MenuItemsComponent } from '../shared/menu-items.component';
 
 @Component({
@@ -9,9 +11,9 @@ import { MenuItemsComponent } from '../shared/menu-items.component';
 })
 export class DeleteRouterComponent extends MenuItemsComponent implements OnInit {
 
-  
 
-  constructor() {
+
+  constructor(private shareDataService: ShareDataService) {
     super();
     const menuItem = new MenuItem();
 
@@ -19,21 +21,9 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
     menuItem.operation = this.operator;
     menuItem.dropdown = [];
     menuItem.dropdownOpen = false;
-    
-    const submenu1 = new MenuItem();
-    submenu1.name = "Test";
-    submenu1.operation = this.operator;
-    submenu1.dropdown = [];
-    submenu1.dropdownOpen = false;
 
-    const submenu2 = new MenuItem();
-    submenu2.name = "Test";
-    submenu2.operation = this.operator;
-    submenu2.dropdown = [];
-    submenu2.dropdownOpen = false;
-    
-    menuItem.dropdown = [submenu1,submenu2];
-    
+    menuItem.dropdown = [];
+
     super.option = menuItem;
   }
 
@@ -41,6 +31,31 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
   }
 
   operator = () => {
-    console.log('Delete Router TODO');
+    this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
+    this.Highcharts.charts[0]?.series[0].data.forEach((conn) => {
+      if (conn.options.from !== undefined && conn.options.to !== undefined)
+        if (conn.options.from === `${this.router.port}` || conn.options.to === `${this.router.port}`) {
+          console.log("removing " + conn.index)
+          // this.Highcharts.charts[0]?.series[0].
+          // console.log(this.Highcharts.charts[0]?.series[0].points[0].);
+          this.Highcharts.charts[0]?.series[0].removePoint(conn.index, true);
+          return;
+          // this.Highcharts.charts[0]?.series[0].removePoint(conn.index, false);
+        }
+    })
+    let connection_list: Connection[] = [];
+    // let index = -1;
+    // this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list });
+    // connection_list.forEach((element, idx) => {
+    //   if ((element.routerA.port === this.router.port && element.routerB.port === router.port) ||
+    //     (element.routerA.port === router.port && element.routerB.port === this.router.port)) {
+    //     index = idx;
+    //     return;
+    //   }
+    // });
+    // connection_list.splice(index, 1)
+    // this.shareDataService.update_connection(connection_list);
+    this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
+
   }
 }

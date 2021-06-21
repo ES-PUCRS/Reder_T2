@@ -1,19 +1,20 @@
-<div class="menuOption" (click)=option.operation() (mouseover)="option.dropdownOpen = true"
-  (mouseout)="option.dropdownOpen = false">
-  <div class="menuText">
+<button class="menuOption">
+  <div class="menuText" (click)=option.operation() (mouseover)="option.dropdownOpen = true"
+    (mouseout)="option.dropdownOpen = false">
     <p>
       {{option.name}}
     </p>
   </div>
   <div *ngIf="option.dropdown.length > 0">
-    <div *ngFor="let subOption of option.dropdown; let i = index" class="dropdown" [style.top.px]="(position + i) * 29"
-      [style.display]="option.dropdownOpen ? 'block':'none'" (mouseover)="option.dropdownOpen = true"
-      (mouseout)="option.dropdownOpen = false" (click)="subOption.operation();$event.stopPropagation()">
+    <button *ngFor="let subOption of option.dropdown; let i = index" class="dropdown"
+      [style.top.px]="(position + i) * 29" [style.display]="option.dropdownOpen ? 'block':'none'"
+      (mouseover)="option.dropdownOpen = true" (mouseout)="option.dropdownOpen = false"
+      (click)="subOption.enabled && subOption.operation();$event.stopPropagation()">
       <div class="dropdownOption">
         <p>{{subOption.name}}</p>
       </div>
       <mat-divider></mat-divider>
-    </div>
+    </button>
 
   </div>
-</div>
+</button>

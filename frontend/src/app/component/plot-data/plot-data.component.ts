@@ -3,6 +3,7 @@ import * as Highcharts from 'highcharts';
 import HighchartsNetworkgraph from "highcharts/modules/networkgraph";
 import { Connection } from 'src/app/interface/connection';
 import { Router } from 'src/app/interface/router';
+import { HighchartsControllerService } from 'src/app/services/highcharts-controller.service';
 import { ShareDataService } from 'src/app/services/share-data.service';
 declare var require: any
 
@@ -114,7 +115,6 @@ export class PlotDataComponent implements OnInit {
             point: {
               events: {
                 drop: function (e) {
-                  // console.log(e);
                 },
                 click: function (e: MouseEvent) {
                   let router = new Router("", -1);
@@ -131,31 +131,19 @@ export class PlotDataComponent implements OnInit {
         }
       }
     )
-    this.setData();
+    this.shareDataService.Highcharts = this.Highcharts;
+    this.shareDataService.init();
   }
   open({ clientX, clientY }: MouseEvent, router: Router): void {
     this.contextMenuX = clientX
     this.contextMenuY = clientY
     this.router = router;
     this.contextMenu = true;
-
-
   }
 
   disableContextMenu(): void {
     this.contextMenu = false;
   }
-
-  setData() {
-    let connections: Connection[] = [];
-
-    this.shareDataService.connections.subscribe((connection) => { connections = connection; }
-    )
-    connections.forEach((connection) => {
-      this.Highcharts.charts[0]?.series[0].addPoint([connection.routerA.port, connection.routerB.port]);
-    })
-  }
-
   getRouter(name: string): Router {
     let routerList: Router[] = [];
     this.shareDataService.routers.subscribe((_routerList) => routerList = _routerList);

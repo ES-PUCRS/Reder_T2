@@ -1,22 +1,35 @@
 .contextMenu{
     position: absolute;
-    text-indent: 13px;
+    text-indent: 5px;
+    width: 150px;
+    display:block;
 }
 .menuOption{
     background-color: rgb(255,255,255);
     color: black;
+    border:none;
+    font-size: inherit;
+    max-width: 150px;
+    min-width: 100px;
+    padding:0px;
 }
 .menuText,.dropdownOption{
     transition: 1s ease;
     padding:5px;
+    width:100%;
 }
-.menuText:hover,.dropdownOption:hover{
+.dropdownOption:hover, .menuText:hover, .dropdownOption:hover{
     background-color: rgb(220, 220, 220);
 }
 .dropdown{
     position: absolute;
-    left:150px;
+    left:145px;
     background-color: white;
+    border:none;
+    font-size: inherit;
+    max-width: 150px;
+    min-width: 100px;
+    padding:0px;
 }
 .dropdownOption{
     padding: 5px;

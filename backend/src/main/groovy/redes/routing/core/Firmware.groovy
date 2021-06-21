@@ -1,25 +1,29 @@
 package redes.routing.core
 
+import redes.routing.core.datastructure.Table
+
 import groovy.transform.ThreadInterrupt
-import groovy.lang.Lazy
 
 import java.net.InetAddress
 
 import redes.routing.ui.server.Server
 import redes.routing.Router
 
+import java.util.stream.Collectors
+import java.util.stream.Stream
+import java.util.Collections
+import java.util.ArrayList
+import java.util.List
+
 @ThreadInterrupt
 class Firmware
 	extends Thread {
 
-    @Lazy
-	Properties properties
-
 	// Instance variables -------------------------------------------------------------
 
 		// #DEFINE
-		private static final int distance = 0
-		private static final int nextHope = 1
+		private static final int metric = 0
+		private static final int nextHop = 1
 
 		// Local host domain address
 		public static InetAddress domain
@@ -34,10 +38,12 @@ class Firmware
 		// Module connection Map<port, socket connection>
 		private static Map<Integer, SocketException> modules
 
-		// Rounting list table Map<destination, int[2]> -> [0]distance & [1]next hop
-		private static Map<Integer, Integer[]> routingTable
-		private static Map<Integer, Integer> wiring
+		// Rounting list table Map<destination, int[2]> -> [0]metricance & [1]next hop
+		private static Map<Integer, Integer> localForwarding
+		private static Table routingTable
 
+		private static Thread share
+		private static Thread flush
 	// --------------------------------------------------------------------------------
 
 	// Start the router firmware
@@ -48,6 +54,8 @@ class Firmware
 		}
 
 		new Server().start()
+		share.start()
+		flush.start()
 	}
 
 	// Singleton access
@@ -59,25 +67,20 @@ class Firmware
 
 	// Singleton constructor
 	private Firmware() {
-	    this.getClass()
-	    	.getResource( Router.propertiesPath )
-	    	.withInputStream {
-	        	properties.load(it)
-	    	}
-
-		domain = InetAddress.getByName(properties."router.domain")
-		routingTable = new HashMap()
+		domain = InetAddress.getByName(Router.properties."router.domain")
+		localForwarding = new HashMap()
+		routingTable = new Table()
 		modules = new HashMap()
-		wiring = new HashMap()
+
+		share = new Thread(replayer)
+		flush = new Thread(flusher)
 	}
 
 
 	def installModule(Integer port = null) {
 		try {
 			do { port = available(port) } while ( !port )
-
 			modules.put(port, new SocketModule( port )) }
-
 		catch (SocketException se) { return se.getLocalizedMessage() }
 
 		port
@@ -87,7 +90,7 @@ class Firmware
 
 	def send(int destination, String message) {
 		try { 
-			modules.get(routingTable.get(destination)[nextHope])
+			modules.get(routingTable.getForwaringPort(routingTable.getNextHope(destination)))
 				   .send(message)
 		} catch (e) { return e.getLocalizedMessage() }
 	}
@@ -102,8 +105,10 @@ class Firmware
 	}
 
 	def unwireModule(int module) {
-		modules.get(module)
-			   .unwire()
+		try {
+			modules.get(module)
+				   .unwire()
+		} catch(Exception e) { e.printStackTrace() }
 	}
 
 	def listModules() {
@@ -119,37 +124,90 @@ class Firmware
 		modules.get(module)
 		       .stop()
 	}
-	
+
+
 	def removeModule(int module) {
-		modules.get(module)
-			   .kill()
-		modules.remove(module)
+		try {
+			modules.get(module).kill()
+			reroute(module)
+			modules.remove(module)
+		} catch (Exception e) {e.printStackTrace()}
 	}
 
+	def getRoutingTable() { routingTable.getList() }
+	def getReplyTable() { routingTable.getReplyList() }
 
+	def listRoutingTableAPI() { routingTable }
 	def listRoutingTable() {
-		String routes = routingTable.toString()
-		//TODO -> Formatar o retorno da routing table
-		routes
+		routingTable.toString().replaceAll("-1", "local")
+							   .replaceAll("16, \\d+", "16, inalcancavel")
 	}
 
-	protected void reroute(int node) {
-		routingTable.remove(node)
+	protected void routesUpdate(int nextHop, Map table) {
+		try {
+		routesUpdate(
+			nextHop,
+			table?.entrySet()
+				.stream()
+				.map( entry ->
+					Stream.of(
+        				entry, new int[] {
+        					entry.getKey() as int,
+        					entry.getValue() as int
+        				}
+    				).collect()
+				)
+				.map(x -> x.get(1))
+				.collect() as ArrayList
+		)
+		} catch (Exception e) { e.printStackTrace() }
 	}
-	protected void reroute(int dst, int dist, int module) {
-		if(routingTable.containsKey(dst)) {
-			Integer[] info = routingTable.get(dst)
-			int distance = dist
-			if(info[this.distance] < dist)
-				distance = info[this.distance]
-			routingTable.put(dst, [distance, module])
-		} else {
-			routingTable.put(dst, [dist, module])
+
+	protected void routesUpdate(int nextHop, ArrayList table) {
+		routingTable.sync(
+			nextHop,
+			table,
+			modules
+				.keySet()
+			  	.stream()
+			  	.collect(Collectors.toList()) as ArrayList
+		)
+	}
+
+	protected void reroute(int node) { routingTable.remove(node) }
+	protected void reroute(int dst, int metric, int nextHop, Integer local = null) {
+		try {
+			if(routingTable.contains(dst)) {
+				Integer[] info = routingTable.get(dst)
+				int distance = info[this.metric]
+				if(info[this.metric] > metric || metric == 16)
+					distance = metric
+				routingTable.add(dst, distance, nextHop)
+			} else {
+				routingTable.add(dst, metric, nextHop)
+			}
+
+			if(metric > 0)
+				routingTable.forwarding(nextHop, local)
+			else if (metric == 16)
+				routingTable.removeForwarding(local)
+
+		} catch (Exception e) { e.printStackTrace() }
+	}
+
+	def flushTable(){
+		ArrayList flushList = []
+		modules.each { port, module ->
+			if(!module.getAlive()) {
+				flushList.add(port)
+			}
+			module.resetAlive()
 		}
+		routingTable.flush(flushList)
 	}
 
     private int generatePort() {
-    	int begin = Integer.parseInt( properties."router.start.ip" )
+    	int begin = Integer.parseInt( Router.properties."router.start.ip" )
     	return (new Random().nextInt(65353-begin) + begin)
     }
 
@@ -176,5 +234,30 @@ class Firmware
         }
         return available()
     }
+
+
+	/* Watch the port waiting for request */
+	private Runnable replayer = new Runnable() {
+		public void run() {
+			int time = Router.properties."router.timer.sharetable" as int
+			while(true) {
+				share.sleep(time)
+				modules?.each { port, module ->
+					module.rip(port)
+				}
+			}
+		}
+	}
+
+	/* Flush the table removing routes that has not updated */
+	private Runnable flusher = new Runnable() {
+		public void run() {
+			int time = Router.properties."router.timer.flushtable" as int
+			while(true) {
+				flush.sleep(time)
+				flushTable()
+			}
+		}
+	}
 
 }

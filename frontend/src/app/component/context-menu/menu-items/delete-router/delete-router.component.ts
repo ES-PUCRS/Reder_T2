@@ -35,11 +35,8 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
     this.Highcharts.charts[0]?.series[0].data.forEach((conn) => {
       if (conn.options.from !== undefined && conn.options.to !== undefined)
         if (conn.options.from === `${this.router.port}` || conn.options.to === `${this.router.port}`) {
-          console.log("removing " + conn.index)
-          // this.Highcharts.charts[0]?.series[0].
-          // console.log(this.Highcharts.charts[0]?.series[0].points[0].);
-          this.Highcharts.charts[0]?.series[0].removePoint(conn.index, true);
-          return;
+          console.log(conn.options);
+          conn.remove()
           // this.Highcharts.charts[0]?.series[0].removePoint(conn.index, false);
         }
     })
@@ -55,7 +52,7 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
     // });
     // connection_list.splice(index, 1)
     // this.shareDataService.update_connection(connection_list);
-    this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
+    // this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
 
   }
 }

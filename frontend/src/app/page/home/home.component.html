@@ -12,9 +12,23 @@
     </div>
 
     <div class="routersList">
-      <div class="routerInList" *ngFor="let router of routers">
+      <div class="routerInList" *ngFor="let router of routers" (click)="selectRouter(router)">
         <label>
           {{router.name}}
+        </label>
+      </div>
+    </div>
+
+    <div class="detailsCard">
+      <div class="cardHeader">
+        <label>Details</label>
+      </div>
+      <div class="cardContent">
+        <label class="detail" *ngIf="selectedRouter != undefined">
+          Name: {{selectedRouter.name || ""}}
+        </label>
+        <label class="detail" *ngIf="selectedRouter != undefined">
+          Wired Port: {{selectedRouter.port || ""}}
         </label>
       </div>
     </div>
@@ -22,10 +36,10 @@
 
   <!-- THis div below represents alls ROUTERS -->
   <div class="box-boundary" (contextmenu)="$event.preventDefault();">
-    <app-plot-data ></app-plot-data>
+    <app-plot-data></app-plot-data>
   </div>
 
-<!-- 
+  <!-- 
   This div below represents the CONTEXT MENU, Appears when using the RIGHT BUTTON
 -->
 </div>

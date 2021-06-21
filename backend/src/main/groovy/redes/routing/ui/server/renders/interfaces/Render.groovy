@@ -6,10 +6,8 @@ import redes.routing.Router
 
 abstract class Render {
 
-	private static final Properties properties = importProperties()
-	private static final root = new File(properties."ui.views.path")
+	private static final root = new File(Router.properties."ui.views.path")
 	private static final templateJson = new File(root, "template.json")
-
 
 	/*
 	 *	Build the response to send to the context to be responded
@@ -22,20 +20,4 @@ abstract class Render {
 		} catch(Exception e) { e.printStackTrace() }
 	}
 
-	/*
-	 * 	Private method due to import project properties
-	 *
-	 *	return properties object
-	 */
-	def static importProperties(){
-		Properties properties = new Properties();
-		new Object() {}
-	    	.getClass()
-	    	.getResource( Router.propertiesPath )
-	    	.withInputStream {
-	        	properties.load(it)
-	    	}
-	    
-	    properties
-	}
 }

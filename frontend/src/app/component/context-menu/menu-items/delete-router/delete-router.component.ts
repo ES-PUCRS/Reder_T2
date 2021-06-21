@@ -31,28 +31,16 @@ export class DeleteRouterComponent extends MenuItemsComponent implements OnInit 
   }
 
   operator = () => {
-    this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
-    this.Highcharts.charts[0]?.series[0].data.forEach((conn) => {
-      if (conn.options.from !== undefined && conn.options.to !== undefined)
-        if (conn.options.from === `${this.router.port}` || conn.options.to === `${this.router.port}`) {
-          console.log(conn.options);
-          conn.remove()
-          // this.Highcharts.charts[0]?.series[0].removePoint(conn.index, false);
-        }
-    })
     let connection_list: Connection[] = [];
-    // let index = -1;
-    // this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list });
-    // connection_list.forEach((element, idx) => {
-    //   if ((element.routerA.port === this.router.port && element.routerB.port === router.port) ||
-    //     (element.routerA.port === router.port && element.routerB.port === this.router.port)) {
-    //     index = idx;
-    //     return;
-    //   }
-    // });
-    // connection_list.splice(index, 1)
-    // this.shareDataService.update_connection(connection_list);
-    // this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
+    let aux_connection_list: Connection[] = [];
+    this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list; aux_connection_list = conn_list });
 
+    aux_connection_list.forEach((element, idx) => {
+      if ((element.routerA.port === this.router.port || element.routerB.port === this.router.port)) {
+        connection_list.splice(idx, 1)
+      }
+    });
+    this.shareDataService.update_connection(connection_list);
+    // this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
   }
 }

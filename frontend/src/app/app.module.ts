@@ -41,8 +41,6 @@ import { DisconnectRouterComponent } from './component/context-menu/menu-items/d
     DisconnectRouterComponent
   ],
   imports: [
-    FlexLayoutModule,
-    ClickOutsideModule,
     MatButtonModule,
     MatDividerModule,
     BrowserAnimationsModule,

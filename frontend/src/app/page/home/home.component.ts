@@ -13,12 +13,49 @@ import { BackendService } from '../../services/backend.service';
 export class HomeComponent implements OnInit {
   constructor(private backendService: BackendService, private shareDataService: ShareDataService) {
   }
+
+  @ViewChild('trigger', { static: true })
+  trigger: MatMenuTrigger | undefined;
+  contextMenu: boolean = false;
+  contextMenuY: number = -1;
+  contextMenuX: number = -1;
+  router: Router | undefined;
+  selectedRouter: Router | undefined;
+
+
+  selectedOption: string = "no Option selected";
   routerCount: number = 0;
   routers: Array<Router> = [];
 
   ngOnInit(): void {
     this.routerCount = window.localStorage.length;
     this.shareDataService.routers.subscribe((routers) => this.routers = routers);
+    let objectKeys = Object.keys(window.localStorage);
+    for (let i = 0; i < window.localStorage.length; i++) {
+      let aux: any = window.localStorage.getItem(objectKeys[i]);
+      this.routers.push(new Router(objectKeys[i], aux));
+    }
+    
+    // console.log(this.routers[0] instanceof Router);
+  }
+
+  diselectRouter(){
+    this.selectedRouter = undefined;
+  }
+
+  open(event: MouseEvent, router: any): void {
+    this.contextMenuX = event.clientX
+    this.contextMenuY = event.clientY
+    this.router = router;
+    this.contextMenu = true;
+  }
+
+  selectRouter(router: any){
+    this.selectedRouter = router;
+  }
+
+  disableContextMenu(): void {
+    this.contextMenu = false;
   }
 
   sendPost() {

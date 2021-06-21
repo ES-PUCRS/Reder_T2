@@ -4,7 +4,6 @@ import groovy.text.SimpleTemplateEngine
 
 import redes.routing.ui.server.renders.interfaces.Render
 
-import redes.routing.core.RouterConnection
 import redes.routing.core.Firmware
 import redes.routing.Router
 
@@ -12,18 +11,11 @@ import library.JSON
 
 class HomeRender extends Render {
 	
-	private static final Properties properties = super.importProperties()
-	private static final root = new File(properties."ui.views.path")
-
 	/*
 	 *	Shell is the JQuery Script, which not
 	 *	accepts render patterns.
 	 */
 	def static index(def map) {	null }
-
-	def static test(def map) {
-		super.build(['variable': JSON.parse(RouterConnection.requestModule(1020))])
-	}
 
 
 	/*
@@ -99,20 +91,26 @@ class HomeRender extends Render {
 								.getInstance()
 								.listRoutingTable() as String
 
-				if(response == "[:]") {
-					response = JSON.parse("modules", "[]")
+				if(response == "") {
+					response = "There is no ip routing table"
 				} else {
 					response = response
-										?.substring(1)
+										?.replaceAll("\\[", "")
+										// ?.substring(1)
+										// ?.substring(0, response.length() - 2)
+										?.replaceAll("\\], ",  "\\\\n\\\\t")
 										?.substring(0, response.length() - 2)
-										?.replaceAll("\\],","\\]\\\\n\\\\t")
 
-					response = "[\\n\\t" + response + "\\n]"
+					response = "[\\n\\t${response}\\n]"
 				}
 			}
 
+
 			response = JSON.parse("content", response)
 		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }
+
+
+			// println response
 		
 		def binding = [
 			'variable' : JSON.verify(response)
@@ -158,7 +156,7 @@ class HomeRender extends Render {
 		def response = ""
 
 		try {
-			if(map.get("object")?[0] == "module"){
+			if(map.get("object")?[0] == "module") {
 				response += 
 						JSON.parse("error",
 							Firmware

@@ -5,15 +5,14 @@ import com.sun.net.httpserver.HttpExchange
 import redes.routing.ui.server.contexts.interfaces.Context
 import redes.routing.ui.server.renders.HomeRender
 import redes.routing.ui.ANSI
+import redes.routing.Router
 
 class HomeContext extends Context {
 
-	private static Properties properties
 	private static root
 
 	HomeContext(){
-		properties = super.importProperties()
-		root = new File(properties."ui.views.path")
+		root = new File(Router.properties."ui.views.path")
 	}
 
 	@Override
@@ -40,7 +39,7 @@ class HomeContext extends Context {
 			try {
 				try { respond = "${path?.substring(1)?.replaceAll(".*\\.","")?:"index"}"(path, params) }
 				catch(ignored) { respond = HomeRender."${path?.substring(1)?.replaceAll("\\..*","")}"(params) }
-			} catch (ignore) { if(new Boolean(properties."cli.debug")) println ignore.getLocalizedMessage() }
+			} catch (ignore) { if(new Boolean(Router.properties."cli.debug")) println ignore.getLocalizedMessage() }
 			
 
 			super.reply(exchange, respond)

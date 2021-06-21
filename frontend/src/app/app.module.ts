@@ -24,6 +24,7 @@ import { ConnectRouterComponent } from './component/context-menu/menu-items/conn
 import { HighchartsChartModule } from 'highcharts-angular';
 import { PlotDataComponent } from './component/plot-data/plot-data.component';
 import { DisconnectRouterComponent } from './component/context-menu/menu-items/disconnect-router/disconnect-router.component';
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -40,6 +41,8 @@ import { DisconnectRouterComponent } from './component/context-menu/menu-items/d
     DisconnectRouterComponent
   ],
   imports: [
+    FlexLayoutModule,
+    ClickOutsideModule,
     MatButtonModule,
     MatDividerModule,
     BrowserAnimationsModule,

@@ -2,7 +2,6 @@ package redes.routing.core.datastructure
 
 import java.util.stream.Collectors
 
-
 import java.util.stream.Stream
 
 import java.util.Collection

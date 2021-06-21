@@ -1,7 +1,6 @@
 package redes.routing.ui.server.renders
 
 import groovy.text.SimpleTemplateEngine
-import groovy.json.JsonSlurper
 
 import redes.routing.ui.server.renders.interfaces.Render
 import redes.routing.core.Firmware
@@ -168,8 +167,7 @@ class APIRender extends Render {
 
 		try {
 			if(map.get("object")[0] == "modules") {
-				response += Firmware
-									.getInstance()
+				response += Firmware.getInstance()
 									.listModules() as String
 
 				if (response != "[:]")
@@ -184,12 +182,8 @@ class APIRender extends Render {
 			}
 
 			else if(map.get("object")[0] == "routes") {
-				response = new JsonSlurper()
-								.parseText(
-									Firmware
-										.getInstance()
-										.listRoutingTable()
-								)
+				response =	Firmware.getInstance()
+									.listRoutingTable()
 
 				// if (response != "[:]")
 					// response = response

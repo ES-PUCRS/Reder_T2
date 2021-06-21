@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { MenuItem } from 'src/app/interface/menu-item';
 import * as Highcharts from 'highcharts';
 import { Router } from 'src/app/interface/router';
+import { HighchartsControllerService } from 'src/app/services/highcharts-controller.service';
 
 @Component({
   selector: 'app-menu-items',
@@ -20,6 +21,6 @@ export class MenuItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 }

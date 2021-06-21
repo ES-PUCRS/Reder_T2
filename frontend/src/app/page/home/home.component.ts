@@ -30,16 +30,9 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.routerCount = window.localStorage.length;
     this.shareDataService.routers.subscribe((routers) => this.routers = routers);
-    let objectKeys = Object.keys(window.localStorage);
-    for (let i = 0; i < window.localStorage.length; i++) {
-      let aux: any = window.localStorage.getItem(objectKeys[i]);
-      this.routers.push(new Router(objectKeys[i], aux));
-    }
-    
-    // console.log(this.routers[0] instanceof Router);
   }
 
-  diselectRouter(){
+  diselectRouter() {
     this.selectedRouter = undefined;
   }
 
@@ -50,7 +43,7 @@ export class HomeComponent implements OnInit {
     this.contextMenu = true;
   }
 
-  selectRouter(router: any){
+  selectRouter(router: any) {
     this.selectedRouter = router;
   }
 

@@ -6,7 +6,6 @@ import groovy.lang.Lazy
 
 class Router {
 
-
     @Lazy
     public static final properties = importProperties()
 	public static final String propertiesPath = "/application.properties"

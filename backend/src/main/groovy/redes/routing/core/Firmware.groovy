@@ -96,6 +96,32 @@ class Firmware
 	}
 
 
+	def freeModule() {
+		modules.find { port, module ->
+			if(!module.getWire()) port
+		}
+		 ?.getValue()
+		 ?.getPort()
+	}
+
+	def wireModule(int router) {
+		def local = freeModule()
+		if(local) {
+			try {
+				def result = RouterConnection.requestModule(router)
+				def target = result?.get("port")
+				if(target && target != "null") {
+					modules.get(local)
+					   	   .wire(target as int)
+				} else {
+					"The router ${router} does not have any free module to connect with."
+				}
+			} catch (Exception e) {e.printStackTrace()}
+		} else {
+			"There is no local free module to connect with ${router}"
+		}
+	}
+	
 
 	def wireModule(int module, int wire) {
 		try {

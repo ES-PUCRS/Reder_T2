@@ -134,6 +134,7 @@ export class PlotDataComponent implements OnInit {
     this.shareDataService.Highcharts = this.Highcharts;
     this.shareDataService.init();
   }
+
   open({ clientX, clientY }: MouseEvent, router: Router): void {
     this.contextMenuX = clientX
     this.contextMenuY = clientY
@@ -144,13 +145,13 @@ export class PlotDataComponent implements OnInit {
   disableContextMenu(): void {
     this.contextMenu = false;
   }
+
   getRouter(name: string): Router {
     let routerList: Router[] = [];
     this.shareDataService.routers.subscribe((_routerList) => routerList = _routerList);
-    let router = routerList.find((_router) => { return `${_router.port}` === name });
+    let router = routerList.find((_router) => {return `${name}` === `${_router.port}`;});
     if (router === undefined) router = new Router("", -1);
     return router;
   }
-
 
 }

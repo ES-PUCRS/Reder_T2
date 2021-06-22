@@ -6,21 +6,20 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 })
 export class BackendService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  public agentEndpoint: string = "http://localhost:4201";
-  public BackendEndpoint: string = "http://localhost:1010/API";
+  public installModuleEndpoint: string = "http://localhost:<PORT>/API/install?object=module";
+  public healthEndpoint:        string = "http://localhost:<PORT>/API/health";
+  public wireEndpoint:          string = "http://localhost:<PORT>/API/wire?object=auto&target=<TARGET>";
 
-  public restGet() {
-    return this.http.get(this.BackendEndpoint);
+  public generate_module(port: number) {
+    const url = this.installModuleEndpoint.replace("<PORT>", `${port}`);
+    return this.http.get<{ port: number }>(url).toPromise();
   }
 
-  public restPost() {
-    return this.http.post(this.agentEndpoint, { title: 'Angular POST Request Example' });
+  public attempt_connection(port: number, target:number) {
+    const url = this.wireEndpoint.replace("<PORT>", `${port}`).replace("<TARGET>", `${target}`);
+    return this.http.get<{ port: number }>(url).toPromise();
   }
-
-  // public restPut() {
-  //   return this.http.put(this.agentEndpoint);
-  // }
 
 }

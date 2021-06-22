@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Connection } from 'src/app/interface/connection';
 import { Router } from 'src/app/interface/router';
 import { ShareDataService } from 'src/app/services/share-data.service';
 import { BackendService } from '../../services/backend.service';
+import { AgentService } from '../../services/agent.service';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +13,7 @@ import { BackendService } from '../../services/backend.service';
 })
 
 export class HomeComponent implements OnInit {
-  constructor(private backendService: BackendService, private shareDataService: ShareDataService) {
+  constructor(private backendService: BackendService, private agentService: AgentService, private shareDataService: ShareDataService) {
   }
 
   @ViewChild('trigger', { static: true })
@@ -21,7 +23,6 @@ export class HomeComponent implements OnInit {
   contextMenuX: number = -1;
   router: Router | undefined;
   selectedRouter: Router | undefined;
-
 
   selectedOption: string = "no Option selected";
   routerCount: number = 0;
@@ -51,15 +52,24 @@ export class HomeComponent implements OnInit {
     this.contextMenu = false;
   }
 
-  sendPost() {
-    let res: any;
-    this.backendService.restPost().subscribe(data => {
-      let port: number = data as number;
+  async sendPost() {
+      const result = await this.agentService.callRouter()
+      let port: number = result as number;
       window.localStorage.setItem("Router " + (1 + this.routerCount), port.toString());
       let name = "Router " + (1 + this.routerCount);
-      this.routers.push(new Router(name, port));
-      console.log(this.routers);
+      let router = new Router(name, port);
+
+      let connectionList: Connection[] = [];
+      this.shareDataService.connections.subscribe((Connection) => connectionList = Connection);
+
+      this.routers.push(router);
+      connectionList.push(new Connection(router, router))
+
+      this.shareDataService.update_router(this.routers);
+      this.shareDataService.update_connection(connectionList);
+
+      this.shareDataService.routers.subscribe((_router_list) => console.log(_router_list));
+
       this.routerCount = window.localStorage.length + 1;
-    })
   }
 }

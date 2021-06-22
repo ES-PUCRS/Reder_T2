@@ -129,6 +129,20 @@ class APIRender extends Render {
 	}
 
 
+	/*
+	 *	Respond the next free module or null if isnt
+	 */
+	def static connect(def map) {
+		try {
+			def resp =
+				JSON.parse("port",
+					Firmware.getInstance()
+							.freeModule() as String
+				)
+			super.build(['variable':resp])
+		} catch (Exception e) {e.printStackTrace()}
+	}
+
 
 	/*
 	 *	Call Firmware installer
@@ -239,7 +253,17 @@ class APIRender extends Render {
 		def response = ""
 
 		try {
-			if(map.get("object")?[0] == "module") {
+
+			if(map.get("object")?[0] == "auto") {
+				response +=
+						JSON.parse("error",
+							Firmware
+								.getInstance()
+								.wireModule(map.get("target")[0] as int)
+						)
+
+				println response
+			} else if(map.get("object")?[0] == "module") {
 				response +=
 						JSON.parse("error",
 							Firmware

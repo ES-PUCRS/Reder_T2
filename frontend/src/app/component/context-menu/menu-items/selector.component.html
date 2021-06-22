@@ -1,7 +1,5 @@
 <div>
     <div [ngSwitch]="component">
-        <configure-module-option *ngSwitchCase="'configure_module'" [position]=position [Highcharts]="Highcharts"
-            [router]=router></configure-module-option>
         <connect-router-option *ngSwitchCase="'connect_router'" [position]=position [Highcharts]="Highcharts"
             [router]=router></connect-router-option>
         <disconnect-router-option *ngSwitchCase="'disconnect_router'" [position]=position [Highcharts]="Highcharts"

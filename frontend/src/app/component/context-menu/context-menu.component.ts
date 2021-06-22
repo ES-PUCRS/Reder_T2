@@ -8,7 +8,7 @@ import { Router } from 'src/app/interface/router';
   styleUrls: ['./context-menu.component.scss']
 })
 export class ContextMenuComponent implements OnInit {
-  menuOptions: Array<string> = ["configure_module","create_module","connect_router","disconnect_router","delete_router"];
+  menuOptions: Array<string> = ["create_module","connect_router","disconnect_router","delete_router"];
 
   @Input() x = 0;
   @Input() y = 0;
@@ -20,7 +20,7 @@ export class ContextMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
 }

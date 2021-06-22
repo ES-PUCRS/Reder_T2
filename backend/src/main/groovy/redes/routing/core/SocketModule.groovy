@@ -41,8 +41,8 @@ class SocketModule {
 		start() // <- watch, enabled
 	}
 
-
-	def getWire(){ wired }
+	def getPort() { port }
+	def getWire() { wired }
 	def getAlive() { updated }
 	def resetAlive() { updated = false	}
 

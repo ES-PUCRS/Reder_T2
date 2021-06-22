@@ -300,21 +300,34 @@
     			if (args[0] == 'module') {
 		    		params = 'object=module&'
 			    	
-			    	if(args[2] == 'on') {
-				    	if(args[3] == undefined){
-				    		this.error('Missing target parameter')
-							return
-				    	}
-			    	} else {
-			    		this.error('Missing connection separator (on)');
-			    		return
-			    	}					
-					if(args[3] == '$last') {
-						this.error('Can not wire on self module.')
-					}
+			    	if(args[1] == 'on' ) {
+			    		if(args[2] == undefined) {
+			    			this.error('Missing target parameter')
+			    			return
+			    		}
+			    		urn = 'API/wire'
+			    		params = "object=auto&target="+args[2]
 
-					params += 'index='  + args[1];
-    				params += '&target='+ args[3];
+			    	} else {
+				    	if(args[2] == 'on') {
+					    	if(args[3] == undefined){
+					    		this.error('Missing target parameter')
+								return
+					    	}
+				    	
+
+				    	} else {
+				    		this.error('Missing connection separator (on)');
+				    		return
+				    	}
+
+						if(args[3] == '$last') {
+							this.error('Can not wire on self module.')
+						}
+
+						params += 'index='  + args[1];
+	    				params += '&target='+ args[3];
+					}
     			} else if (args[0] == 'cut') {
 		    		params = 'object=cut&index='+args[1]
     			}

@@ -18,7 +18,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MenuItemsComponent } from './component/context-menu/menu-items/shared/menu-items.component';
 import { SelectorComponent } from './component/context-menu/menu-items/selector.component';
 import { DeleteRouterComponent } from './component/context-menu/menu-items/delete-router/delete-router.component';
-import { ConfigureModuleComponent } from './component/context-menu/menu-items/configure-module/configure-module.component';
 import { CreateModuleComponent } from './component/context-menu/menu-items/create-module/create-module.component';
 import { ConnectRouterComponent } from './component/context-menu/menu-items/connect-router/connect-router.component';
 import { HighchartsChartModule } from 'highcharts-angular';
@@ -35,7 +34,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MenuItemsComponent,
     SelectorComponent,
     DeleteRouterComponent,
-    ConfigureModuleComponent,
     CreateModuleComponent,
     ConnectRouterComponent,
     PlotDataComponent,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class BackendService {
 
   public attempt_connection(port: number, target:number) {
     const url = this.wireEndpoint.replace("<PORT>", `${port}`).replace("<TARGET>", `${target}`);
-    return this.http.get<{ port: number }>(url).toPromise();
+    return this.http.get<{ error: string }>(url).toPromise();
   }
 
 }

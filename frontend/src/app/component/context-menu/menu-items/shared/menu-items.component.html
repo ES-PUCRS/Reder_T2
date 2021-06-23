@@ -1,5 +1,5 @@
 <button class="menuOption">
-  <div class="menuText" (click)=option.operation() (mouseover)="option.dropdownOpen = true"
+  <div class="menuText" (click)="option.operation();option.dropdownOpen =false;$event.stopPropagation();" (mouseover)="option.dropdownOpen = true"
     (mouseout)="option.dropdownOpen = false">
     <p>
       {{option.name}}
@@ -9,7 +9,7 @@
     <button *ngFor="let subOption of option.dropdown; let i = index" class="dropdown"
       [style.top.px]="(position + i) * 29" [style.display]="option.dropdownOpen ? 'block':'none'"
       (mouseover)="option.dropdownOpen = true" (mouseout)="option.dropdownOpen = false"
-      (click)="subOption.enabled && subOption.operation();$event.stopPropagation()">
+      (click)="subOption.enabled && subOption.operation();option.dropdownOpen =false;$event.stopPropagation();">
       <div class="dropdownOption">
         <p>{{subOption.name}}</p>
       </div>

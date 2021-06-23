@@ -36,7 +36,7 @@ class RouterConnection {
 	static def setConnection(int target, String uri, Map params = null, String method = "GET") {
 		URL url = new URL("http://localhost:${target}/API/${uri}${defParams(params)}")
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection()
-		conn.setRequestMethod(method)	
+		conn.setRequestMethod(method)
 		conn
 	}
 

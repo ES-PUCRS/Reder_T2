@@ -234,6 +234,15 @@ class APIRender extends Render {
 									map.get("content")[0]
 								) as String
 						)
+			else if(map.get("object")?[0] == "file")
+						JSON.parse("error",
+							Firmware
+								.getInstance()
+								.send(
+									Integer.parseInt(map.get("destination") [0]),
+									"file>${map.get("content")[0]}"
+								) as String
+						)
 			else
 				response = JSON.parse("error", "Action not defined")
 		} catch (e) { response = JSON.parse("error", e.getLocalizedMessage()) }

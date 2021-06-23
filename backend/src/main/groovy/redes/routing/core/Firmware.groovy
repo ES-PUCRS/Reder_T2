@@ -9,6 +9,8 @@ import java.net.InetAddress
 import redes.routing.ui.server.Server
 import redes.routing.Router
 
+import redes.routing.io.HardDrive
+
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.Collections
@@ -106,7 +108,14 @@ class Firmware
 	}
 
 
-	def send(int destination, String message, Integer origin = port) {
+	def send(int destination, def message, Integer origin = port) {
+		if(origin == port && message.startWith("file>")) {
+			message = HardDrive.readFile(message.replace("file>",""))
+			println message
+			if(!message)
+				return "The file does not exist"
+		}
+
 		try {
 			modules.get(routingTable.getNextHop(destination))
 				   .send(message.replaceAll("\\s","%20"), destination, origin)

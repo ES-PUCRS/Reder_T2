@@ -33,6 +33,9 @@ class Table {
 		reverse = new HashMap()
 	}
 
+	def getNextHop(int destination) {
+		getForwaringPort(get(destination)[this.hop])
+	}
 
 	def get(int destination) {
 		try {

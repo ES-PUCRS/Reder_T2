@@ -16,8 +16,8 @@
 
 		$('body').terminal({
 
-		    $authority: function() 	{ return 'Router authority: '   + authority   },
 		    $last: function()		{ return 'Last module port generated: '+ last },
+		    $authority: function() 	{ return 'Router authority: '     + authority },
 
 
 		    // Facilitar minha vida testando. Moh mão fazer esse wire.
@@ -63,7 +63,7 @@
 					return
     			}
 				//-------------------------------------------------------------------------------------------------------------------------
-    			if(false){
+    			if(true){
 	    			try {
 		    			res = await fetch(
 		    				'http://localhost:1020/API/install?object=module&port=1022'

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Connection } from 'src/app/interface/connection';
 import { MenuItem } from 'src/app/interface/menu-item';
 import { Router } from 'src/app/interface/router';
+import { BackendService } from 'src/app/services/backend.service';
 import { ShareDataService } from 'src/app/services/share-data.service';
 import { MenuItemsComponent } from '../shared/menu-items.component';
 
@@ -13,7 +14,7 @@ import { MenuItemsComponent } from '../shared/menu-items.component';
 
 export class ConnectRouterComponent extends MenuItemsComponent implements OnInit {
 
-  constructor(private shareDataService: ShareDataService) {
+  constructor(private shareDataService: ShareDataService, private backendService: BackendService) {
     super();
 
   }
@@ -50,15 +51,25 @@ export class ConnectRouterComponent extends MenuItemsComponent implements OnInit
   operation = () => {
 
   }
-  subOperation = (router: Router) => {
-    this.Highcharts.charts[0]?.series[0].addPoint([router.port, this.router.port]);
-    let connection_list: Connection[] = [];
-    this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list });
-    connection_list.push(new Connection(router, this.router));
+  //{ "error": "null" }
+  subOperation = async (router: Router) => {
+    const result = (await this.backendService.attempt_connection(this.router.port, router.port)).error
+    console.log(result);
+    if(result == undefined){
 
-    this.shareDataService.update_connection(connection_list);
-    this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list });
-    // this.Highcharts.charts[0]?.series[0].data.forEach((el) => console.log(el.options));
+      this.Highcharts.charts[0]?.series[0].addPoint([router.port, this.router.port]);
+      let connection_list: Connection[] = [];
+      this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list });
+      connection_list.push(new Connection(router, this.router));
+
+      this.shareDataService.update_connection(connection_list);
+      this.shareDataService.connections.subscribe((conn_list) => { connection_list = conn_list });
+    }
+    else{
+      alert(result);
+    }
+
+
 
   }
 }

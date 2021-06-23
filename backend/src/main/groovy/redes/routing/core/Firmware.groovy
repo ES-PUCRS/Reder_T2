@@ -9,6 +9,8 @@ import java.net.InetAddress
 import redes.routing.ui.server.Server
 import redes.routing.Router
 
+import redes.routing.io.HardDrive
+
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.Collections
@@ -22,8 +24,9 @@ class Firmware
 	// Instance variables -------------------------------------------------------------
 
 		// #DEFINE
-		private static final int metric = 0
-		private static final int nextHop = 1
+		private static final int destination = 0
+		private static final int metric = 1
+		private static final int nextHop = 2
 
 		// Local host domain address
 		public static InetAddress domain
@@ -39,7 +42,6 @@ class Firmware
 		private static Map<Integer, SocketException> modules
 
 		// Rounting list table Map<destination, int[2]> -> [0]metricance & [1]next hop
-		private static Map<Integer, Integer> localForwarding
 		private static Table routingTable
 
 		private static Thread share
@@ -68,7 +70,6 @@ class Firmware
 	// Singleton constructor
 	private Firmware() {
 		domain = InetAddress.getByName(Router.properties."router.domain")
-		localForwarding = new HashMap()
 		routingTable = new Table()
 		modules = new HashMap()
 
@@ -80,19 +81,45 @@ class Firmware
 	def installModule(Integer port = null) {
 		try {
 			do { port = available(port) } while ( !port )
-			modules.put(port, new SocketModule( port )) }
-		catch (SocketException se) { return se.getLocalizedMessage() }
+			modules.put(port, new SocketModule( port ))
+		} catch (SocketException se) { return se.getLocalizedMessage() }
 
 		port
 	}
 
 
+	def send(int src, Map header) {
+		def dst
+		try { dst = header.get("dst") as int }
+		catch(Exception e) { println "Unreacheable. There is no destine on request." }
 
-	def send(int destination, String message) {
-		try { 
-			modules.get(routingTable.getForwaringPort(routingTable.getNextHope(destination)))
-				   .send(message)
-		} catch (e) { return e.getLocalizedMessage() }
+		if(!routingTable.contains(dst)) {
+			println "Unreachable"
+			return
+		} else {
+			def wrapper = routingTable.get(dst)
+
+			if(wrapper[this.metric] == 0) {
+				println header.get("content").replaceAll("%20", " ")
+			} else {
+				send(dst, header.get("content"), header.get("origin") as int)
+			}
+		}
+	}
+
+
+	def send(int destination, def message, Integer origin = port) {
+		if(origin == port && message.startWith("file>")) {
+			message = HardDrive.readFile(message.replace("file>",""))
+			println message
+			if(!message)
+				return "The file does not exist"
+		}
+
+		try {
+			modules.get(routingTable.getNextHop(destination))
+				   .send(message.replaceAll("\\s","%20"), destination, origin)
+		} catch (e) { return "Unreacheable" }
 	}
 
 
@@ -103,6 +130,7 @@ class Firmware
 		 ?.getValue()
 		 ?.getPort()
 	}
+
 
 	def wireModule(int router) {
 		def local = freeModule()
@@ -116,7 +144,7 @@ class Firmware
 				} else {
 					"The router ${router} does not have any free module to connect with."
 				}
-			} catch (Exception e) {e.printStackTrace()}
+			} catch (Exception e) { e.printStackTrace() }
 		} else {
 			"There is no local free module to connect with ${router}"
 		}

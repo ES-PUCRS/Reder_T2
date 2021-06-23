@@ -13,6 +13,7 @@ import java.lang.Thread
 import redes.routing.core.datastructure.Table
 
 import redes.routing.ui.ANSI
+import redes.routing.Router
 
 import library.Protocol
 import library.HTTP
@@ -41,10 +42,10 @@ class SocketModule {
 		start() // <- watch, enabled
 	}
 
-	def getPort() { port }
-	def getWire() { wired }
-	def getAlive() { updated }
-	def resetAlive() { updated = false	}
+	def getPort() 	 { port }
+	def getWire() 	 { wired }
+	def getAlive() 	 { updated }
+	def resetAlive() { updated = false }
 
 	/* CONTROL INTERFACE ------------------------------*/
 
@@ -91,7 +92,7 @@ class SocketModule {
 	}
 
 	// Internal call
-	def send(String message) {
+	def send(String message, int dst, int origin) {
 		if(!wired)
 			throw new NullPointerException
 			("There is no wired connection on this module.")
@@ -99,7 +100,7 @@ class SocketModule {
 			if(enabled)
 				socket.send(
 					createPacket(
-						JSON.parse(['action':'message', 'content':message, 'src':port]),
+						JSON.parse(['action':'message', 'origin':origin, 'src':port, 'dst':dst, 'content':message]),
 						wired
 					)
 				)
@@ -150,8 +151,9 @@ class SocketModule {
 
 	// Handle received messages
 	def message (int wire, DatagramPacket packet = null) {
-		def msg = Protocol.packetHeader(packet)
-		println "received ${this.port} msg: ${msg.get("content")}"
+		def map = Protocol.packetHeader(packet)
+		firmware.send(wire, map)
+		// println "received ${this.port} msg: ${msg.get("content")}"
 	}
 
 	// Handle received files
@@ -231,14 +233,14 @@ class SocketModule {
 
 		try {
 			"${map.get('action')}"(Integer.parseInt(map.get("src")), packet)
-		} catch(Exception e) { println e.getLocalizedMessage() + " {There is no action or src on header}" }
+		} catch(Exception e) { println e.getLocalizedMessage() + " {There is no action or src on header}"; e.printStackTrace() }
 	}
 
 	/* Watch the port waiting for request */
 	private Runnable watchdog = new Runnable() {
 		public void run() {
 			enabled = true
-			byte[] data = new byte[1024]
+			byte[] data = new byte[Router.properties."router.packet.size" as int]
 			DatagramPacket packet =
 				new DatagramPacket(data, data.length);
 			while(enabled) {

@@ -34,7 +34,11 @@ class Table {
 	}
 
 	def getNextHop(int destination) {
-		getForwaringPort(get(destination)[this.hop])
+		def wrapperHop = get(destination)
+		if (wrapperHop)
+			getForwaringPort(wrapperHop[this.hop])
+		else
+			null
 	}
 
 	def get(int destination) {

@@ -92,7 +92,7 @@ class SocketModule {
 	}
 
 	// Internal call
-	def send(String message, int dst, int origin) {
+	def send(String message, int dst, int origin, String type) {
 		if(!wired)
 			throw new NullPointerException
 			("There is no wired connection on this module.")
@@ -100,7 +100,7 @@ class SocketModule {
 			if(enabled)
 				socket.send(
 					createPacket(
-						JSON.parse(['action':'message', 'origin':origin, 'src':port, 'dst':dst, 'content':message]),
+						JSON.parse(['action':'message', 'origin':origin, 'src':port, 'dst':dst, 'type':type, 'content':message]),
 						wired
 					)
 				)
@@ -185,7 +185,7 @@ class SocketModule {
 						println "There is no table!"
 				}
 			}
-		}
+	}
 
 	/* CONNECTION INTERFACE ---------------------------*/
 
@@ -226,10 +226,16 @@ class SocketModule {
 
 	// Generic method dispatcher 
 	private void handler(DatagramPacket packet) {
+		def displayLength = Router.properties."ui.display.max" as int
+		def display = trim(packet)
+
+		if(display.length() > displayLength)
+			display = display.substring(0, displayLength) + "...]}";
+			
 		updated = true
 		def map = Protocol.packetHeader(packet)
 		if(map.get("action") != "rip")
-			println "${ANSI.GREEN}[MODULE] ${this.port}${ANSI.RESET} <- ${trim(packet)}"
+			println "${ANSI.GREEN}[MODULE] ${this.port}${ANSI.RESET} <- ${display}"
 
 		try {
 			"${map.get('action')}"(Integer.parseInt(map.get("src")), packet)

@@ -11,6 +11,7 @@ export class BackendService {
   public installModuleEndpoint: string = "http://localhost:<PORT>/API/install?object=module";
   public healthEndpoint:        string = "http://localhost:<PORT>/API/health";
   public wireEndpoint:          string = "http://localhost:<PORT>/API/wire?object=auto&target=<TARGET>";
+  public unwireEndpoint:        string = "http://localhost:<PORT>/API/wire?object=cut&target=<TARGET>";
 
   public generate_module(port: number) {
     const url = this.installModuleEndpoint.replace("<PORT>", `${port}`);

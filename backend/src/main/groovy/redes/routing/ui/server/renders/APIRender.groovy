@@ -222,7 +222,6 @@ class APIRender extends Render {
 	 */
 	def static send(def map) {
 		def response = ""
-
 		try {
 			if(map.get("object")?[0] == "message")
 				response += 
@@ -271,7 +270,6 @@ class APIRender extends Render {
 								.wireModule(map.get("target")[0] as int)
 						)
 
-				println response
 			} else if(map.get("object")?[0] == "module") {
 				response +=
 						JSON.parse("error",

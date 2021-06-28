@@ -15,6 +15,7 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.Collections
 import java.util.ArrayList
+import java.util.Arrays
 import java.util.List
 
 @ThreadInterrupt
@@ -100,7 +101,14 @@ class Firmware
 			def wrapper = routingTable.get(dst)
 
 			if(wrapper[this.metric] == 0) {
-				println header.get("content").replaceAll("%20", " ")
+				if(header.get("type") == "display/")
+					println header.get("content")
+								  .replaceAll("%20", " ")
+				else
+					HardDrive.writeFile(
+						"${port}_${header.get("type")}",
+						header.get("content")
+					)				
 			} else {
 				send(dst, header.get("content"), header.get("origin") as int)
 			}
@@ -109,17 +117,28 @@ class Firmware
 
 
 	def send(int destination, def message, Integer origin = port) {
-		if(origin == port && message.startWith("file>")) {
-			message = HardDrive.readFile(message.replace("file>",""))
-			println message
-			if(!message)
-				return "The file does not exist"
-		}
-
+		def type
 		try {
-			modules.get(routingTable.getNextHop(destination))
-				   .send(message.replaceAll("\\s","%20"), destination, origin)
-		} catch (e) { return "Unreacheable" }
+			if(origin == port && message?.startsWith("file>")) {
+				type = message = message.replace("file>","")
+				message = Arrays.toString(HardDrive.readFile(message).getBytes())
+				if(!message)
+					return "The file does not exist"
+			} else {
+				message = message.replaceAll("\\s","%20")
+				type = "display/"
+			}
+
+		// try {
+			def nextHop = routingTable.getNextHop(destination)
+			if(nextHop)
+				modules.get(nextHop)
+					   ?.send(message, destination, origin, type)
+			else
+				return "Unreacheable"
+		   	null
+		} catch (Exception f) { f.printStackTrace() }
+		// } catch (e) { return "Unreacheable" }
 	}
 
 
@@ -199,21 +218,21 @@ class Firmware
 
 	protected void routesUpdate(int nextHop, Map table) {
 		try {
-		routesUpdate(
-			nextHop,
-			table?.entrySet()
-				.stream()
-				.map( entry ->
-					Stream.of(
-        				entry, new int[] {
-        					entry.getKey() as int,
-        					entry.getValue() as int
-        				}
-    				).collect()
-				)
-				.map(x -> x.get(1))
-				.collect() as ArrayList
-		)
+			routesUpdate(
+				nextHop,
+				table?.entrySet()
+					.stream()
+					.map( entry ->
+						Stream.of(
+	        				entry, new int[] {
+	        					entry.getKey() as int,
+	        					entry.getValue() as int
+	        				}
+	    				).collect()
+					)
+					.map(x -> x.get(1))
+					.collect() as ArrayList
+			)
 		} catch (Exception e) { e.printStackTrace() }
 	}
 
